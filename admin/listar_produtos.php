@@ -47,6 +47,7 @@
         </tr>
     <?php endforeach; ?>
 </table>
+<a href="index.php">Voltar</a>
 
 </body>
 </html>

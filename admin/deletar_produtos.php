@@ -8,3 +8,4 @@
         echo "Erro ao deletar produto: " . mysqli_error($conexao);
     }
 ?>
+<br><a href="index.php">Voltar</a>

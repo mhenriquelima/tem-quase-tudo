@@ -17,6 +17,7 @@ if (isset($_POST['salvar'])) {
 
     if (mysqli_query($conexao, $update)) {
         echo "Produto atualizado com sucesso!";
+        echo '<br><a href="index.php">Voltar</a>';
         exit;
     } else {
         echo "Erro ao atualizar: " . mysqli_error($conexao);
@@ -65,6 +66,6 @@ $produto = mysqli_fetch_assoc($resultado);
     
     <button type="submit" name="salvar">Salvar</button>
 </form>
-
+<a href="index.php">Voltar</a>
 </body>
 </html>

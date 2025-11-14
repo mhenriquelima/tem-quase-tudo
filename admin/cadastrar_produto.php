@@ -39,6 +39,6 @@
 
     <button type="submit" name="cadastrar">Salvar</button>
 </form>
-
+<a href="index.php">Voltar</a>
 </body>
 </html>
