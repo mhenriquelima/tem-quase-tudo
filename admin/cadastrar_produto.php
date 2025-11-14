@@ -2,15 +2,14 @@
     require_once("config.inc.php");
 
     if (isset($_POST['cadastrar'])) {
-        $nome = $_POST['nome'];
+        $produto = $_POST['produto'];
         $descricao = $_POST['descricao'];
         $preco = $_POST['preco'];
         $estoque = $_POST['estoque'];
         $desconto = $_POST['desconto'];
 
         $query = "INSERT INTO produtos (produto, descricao, preco, estoque, desconto) 
-                VALUES (:produto, :descricao, :preco, :estoque, :desconto)";
-
+                VALUES ('$produto', '$descricao', '$preco', '$estoque', '$desconto')";
         if (mysqli_query($conexao, $query)) {
             echo "Produto cadastrado com sucesso!";
         } else {
@@ -38,7 +37,8 @@
     Desconto (%): <br>
     <input type="number" step="0.01" name="desconto" value="0"><br><br>
 
-    <button type="submit">Salvar</button>
+    <button type="submit" name="cadastrar">Salvar</button>
 </form>
+
 </body>
 </html>

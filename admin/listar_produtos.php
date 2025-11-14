@@ -3,6 +3,8 @@
 
     $query = "SELECT * FROM produtos";
     $resultado = mysqli_query($conexao, $query);
+
+    $produtos = mysqli_fetch_all($resultado, MYSQLI_ASSOC);
 ?>
 <!DOCTYPE html>
 <html>
@@ -13,7 +15,7 @@
 
 <h1>Produtos</h1>
 
-<a href="adicionar_produto.php"> Adicionar Produto</a>
+<a href="cadastrar_produto.php"> Adicionar Produto</a>
 <br><br>
 
 <table border="1" cellpadding="10">
@@ -39,8 +41,8 @@
             <td>R$ <?= number_format($precoFinal, 2, ',', '.') ?></td>
             <td><?= $p['estoque'] ?></td>
             <td>
-                <a href="editar_produto.php?id=<?= $p['id'] ?>">Editar</a> | 
-                <a href="deletar_produto.php?id=<?= $p['id'] ?>" onclick="return confirm('Excluir produto?')">Excluir</a>
+                <a href="atualizar_produtos.php?id=<?= $p['id'] ?>">Editar</a> | 
+                <a href="deletar_produtos.php?id=<?= $p['id'] ?>">Excluir</a>
             </td>
         </tr>
     <?php endforeach; ?>
