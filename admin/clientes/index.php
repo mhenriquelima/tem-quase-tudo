@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <?php
     echo "index de clientes";
 =======
@@ -19,4 +18,4 @@
     <li><a href="../index.php">Voltar ao Painel Principal</a></li>
 </body>
 </html>
->>>>>>> origin/uira
+

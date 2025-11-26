@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <!DOCTYPE html>
 <html>
 <head>
@@ -87,6 +86,5 @@ if (file_exists($productsFile)) {
     <?php endif; ?>
   </div>
   <footer style="margin-top:14px;color:#666;font-size:0.9rem">Atualizado em: <?php echo date('d/m/Y'); ?></footer>
->>>>>>> origin/victor
 </body>
 </html>
