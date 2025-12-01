@@ -262,11 +262,12 @@ main {
 .product-image {
   width: 100%;
   height: 200px;
+  height: 160px;
   background-color: var(--light-gray);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 80px;
+  font-size: 64px;
   overflow: hidden;
 }
 
@@ -292,17 +293,18 @@ main {
 }
 
 .product-name {
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 600;
   color: var(--dark-gray);
   margin-bottom: 8px;
-  line-height: 1.4;
-  height: 28px;
+  line-height: 1.3;
+  /* Allow product names to wrap to up to 3 lines instead of truncating early */
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
+  height: auto;
 }
 
 .product-rating {
