@@ -1,32 +1,25 @@
 DROP DATABASE IF EXISTS tem_quase_tudo_db;
 
-CREATE DATABASE IF NOT EXISTS tem_quase_tudo_db
-  CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
+CREATE DATABASE tem_quase_tudo_db;
 USE tem_quase_tudo_db;
 
-CREATE TABLE IF NOT EXISTS clientes (
+CREATE TABLE produtos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    produto VARCHAR(100) NOT NULL,
+    descricao TEXT,
+    preco DECIMAL(10,2) NOT NULL,
+    estoque INT NOT NULL DEFAULT 0,
+    desconto DECIMAL(5,2) NOT NULL DEFAULT 0,
+    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+CREATE TABLE clientes (
   id INT AUTO_INCREMENT PRIMARY KEY,
   nome VARCHAR(255) NOT NULL,
-  email VARCHAR(255) NOT NULL UNIQUE,
-  telefone VARCHAR(20),
+  email VARCHAR(255) NOT NULL,
+  senha VARCHAR(100) NOT NULL,
+  telefone VARCHAR(50),
   endereco VARCHAR(255),
-  cidade VARCHAR(100),
-  estado VARCHAR(2),
-  cep VARCHAR(10),
-  data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  INDEX(email)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-CREATE TABLE IF NOT EXISTS produtos (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  produto VARCHAR(255) NOT NULL,
-  descricao TEXT,
-  preco DECIMAL(10,2) NOT NULL DEFAULT 0,
-  desconto TINYINT NOT NULL DEFAULT 0,
-  estoque INT NOT NULL DEFAULT 0,
-  data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  INDEX(produto)
+  cidade VARCHAR(100)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS `pedidos` (
