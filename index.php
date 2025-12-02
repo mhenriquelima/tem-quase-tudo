@@ -17,12 +17,7 @@
 </div>
 
 <?php
-require_once __DIR__ . "/config.inc.php";
-
-$query = "SELECT *, (preco - (preco * (desconto/100))) AS preco_final FROM produtos";
-$result = mysqli_query($conexao, $query);
-
-$products = mysqli_fetch_all($result, MYSQLI_ASSOC);
+include __DIR__ . '/includes/products.php';
 
 // Dividir em 3 seções: 0-5, 6-11, 12+
 $section1 = array_slice($products, 0, 6);
@@ -49,7 +44,7 @@ $section3 = array_slice($products, 12);
                     <?php endif; ?>
                     <div class="product-price">R$ <?php echo number_format($product['price'], 2, ',', '.'); ?></div>
                     <div class="product-actions">
-                        <a href="add_carrinho.php?id=<?php echo $product['id']; ?>" class="btn-add-cart"> 🛒 Adicionar </a>
+                        <button class="btn-add-cart">🛒 Adicionar</button>
                         <button class="btn-wishlist">❤️</button>
                     </div>
                 </div>
@@ -78,7 +73,7 @@ $section3 = array_slice($products, 12);
                     <?php endif; ?>
                     <div class="product-price">R$ <?php echo number_format($product['price'], 2, ',', '.'); ?></div>
                     <div class="product-actions">
-                        <a href="add_carrinho.php?id=<?php echo $product['id']; ?>" class="btn-add-cart"> 🛒 Adicionar </a>
+                        <button class="btn-add-cart">🛒 Adicionar</button>
                         <button class="btn-wishlist">❤️</button>
                     </div>
                 </div>
@@ -107,7 +102,7 @@ $section3 = array_slice($products, 12);
                     <?php endif; ?>
                     <div class="product-price">R$ <?php echo number_format($product['price'], 2, ',', '.'); ?></div>
                     <div class="product-actions">
-                        <a href="add_carrinho.php?id=<?php echo $product['id']; ?>" class="btn-add-cart"> 🛒 Adicionar </a>
+                        <button class="btn-add-cart">🛒 Adicionar</button>
                         <button class="btn-wishlist">❤️</button>
                     </div>
                 </div>
