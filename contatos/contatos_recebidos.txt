@@ -1,0 +1,2 @@
+[02/12/2025 22:04:46] Nome: a | Email: admin@admin.com | Telefone: 10000000000 | Assunto: Problema com pedido | Mensagem: aaaaaaaaaa
+---
