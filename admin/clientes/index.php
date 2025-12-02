@@ -1,6 +1,6 @@
 <?php
     echo "index de clientes";
-=======
+?>
 <!DOCTYPE html>
 <html>
 <head>

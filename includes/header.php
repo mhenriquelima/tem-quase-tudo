@@ -38,10 +38,17 @@ $cart_count = count($_SESSION['carrinho'] ?? []);
                     <span class="header-action-icon">❤️</span>
                     <span>Favoritos</span>
                 </a>
-                <a href="/tem-quase-tudo/" class="header-action">
-                    <span class="header-action-icon">👤</span>
-                    <span>Conta</span>
-                </a>
+                <?php if (isset($_SESSION['cliente_id'])): ?>
+                    <a href="/tem-quase-tudo/conta.php" class="header-action">
+                        <span class="header-action-icon">👤</span>
+                        <span>Conta</span>
+                    </a>
+                <?php else: ?>
+                    <a href="/tem-quase-tudo/admin/login/login.php" class="header-action">
+                        <span class="header-action-icon">👤</span>
+                        <span>Conta</span>
+                    </a>
+                <?php endif; ?>
                 <a href="/tem-quase-tudo/carrinho.php" class="header-action">
                     <span class="header-action-icon">🛒</span>
                     <span>Carrinho</span>

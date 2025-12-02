@@ -67,11 +67,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html lang="pt-BR">
 <head>
 	<meta charset="utf-8">
-	<title>Cadastrar Cliente</title>
+	<title>Criar Conta</title>
 </head>
 <body>
 
-<h1>Cadastrar Cliente</h1>
+<h1>Criar Conta</h1>
 
 <?php if (!empty($errors)): ?>
 	<div>

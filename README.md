@@ -63,6 +63,42 @@ CREATE TABLE clientes (
   endereco VARCHAR(255),
   cidade VARCHAR(100)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS `pedidos` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `cliente_id` INT NOT NULL,
+  `data_pedido` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `total` DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+  `status` VARCHAR(50) NOT NULL DEFAULT 'pendente',
+  `endereco_entrega` TEXT NULL,
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  INDEX `idx_pedidos_cliente` (`cliente_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Tabela de itens do pedido (opcional, útil para histórico detalhado)
+CREATE TABLE IF NOT EXISTS `pedido_items` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `pedido_id` INT NOT NULL,
+  `produto_id` INT NULL,
+  `nome_produto` VARCHAR(255) NULL,
+  `quantidade` INT NOT NULL DEFAULT 1,
+  `preco_unitario` DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+  `subtotal` DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+  PRIMARY KEY (`id`),
+  INDEX `idx_pedido_items_pedido` (`pedido_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+ALTER TABLE `pedidos`
+  ADD CONSTRAINT `fk_pedidos_cliente`
+    FOREIGN KEY (`cliente_id`) REFERENCES `clientes`(`id`)
+    ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE `pedido_items`
+  ADD CONSTRAINT `fk_items_pedido`
+    FOREIGN KEY (`pedido_id`) REFERENCES `pedidos`(`id`)
+    ON DELETE CASCADE ON UPDATE CASCADE;
+
 ```
 ---
 

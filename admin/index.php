@@ -6,5 +6,6 @@
 <body>
     <li><a href="produtos/index.php">Administar Produtos</a></li>
     <li><a href="clientes/index.php">Administar Clientes</a></li>
+    <li><a href="login/login.php">Login</a></li>
 </body>
 </html>
