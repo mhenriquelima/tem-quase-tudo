@@ -1,7 +1,14 @@
-<?php 
-include __DIR__ . '/includes/header.php';
-$selectedProducts = $_SESSION['carrinho'] ?? []; 
-$total = array_sum(array_map(fn($p) => $p['preco'] * $p['quantidade'], $selectedProducts));
+<?php
+session_start();
+require_once __DIR__ . '/includes/header.php';
+require_once __DIR__ . '/includes/functions.php';
+
+$selectedProducts = $_SESSION['carrinho'] ?? [];
+
+$total = 0;
+foreach ($selectedProducts as $item) {
+    $total += ($item['preco'] * $item['quantidade']);
+}
 ?>
 
 <h1 style="margin-bottom: 30px; font-size: 32px;">🛒 Seu Carrinho</h1>
@@ -14,56 +21,70 @@ $total = array_sum(array_map(fn($p) => $p['preco'] * $p['quantidade'], $selected
 
 <?php else: ?>
 
-    <div class="cart-container">
-        <div class="cart-table">
-            <table>
+    <form method="post" action="update_carrinho.php">
+    <div class="cart-container" style="display:flex;gap:24px;">
+        <div class="cart-table" style="flex:1;">
+            <table style="width:100%;border-collapse:collapse;">
                 <thead>
                     <tr>
-                        <th>Produto</th>
-                        <th>Qtd</th>
-                        <th>Preço</th>
-                        <th>Subtotal</th>
-                        <th>Ação</th>
+                        <th style="text-align:left;border-bottom:1px solid #eee;padding:8px;">Produto</th>
+                        <th style="border-bottom:1px solid #eee;padding:8px;">Qtd</th>
+                        <th style="border-bottom:1px solid #eee;padding:8px;">Preço</th>
+                        <th style="border-bottom:1px solid #eee;padding:8px;">Subtotal</th>
+                        <th style="border-bottom:1px solid #eee;padding:8px;">Ação</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php foreach ($selectedProducts as $idx => $p): ?>
                         <tr>
-                            <td><?= htmlspecialchars($p['nome']) ?></td>
-                            <td>
-                                <input type="number" value="<?= $p['quantidade'] ?>" min="1" style="width: 50px; padding: 5px; border: 1px solid #DDD; border-radius: 4px;">
+                            <td style="padding:8px;vertical-align:middle;">
+                                <?= htmlspecialchars($p['nome']) ?>
                             </td>
-                            <td>R$ <?= number_format($p['preco'], 2, ',', '.') ?></td>
-                            <td><strong>R$ <?= number_format($p['preco'] * $p['quantidade'], 2, ',', '.') ?></strong></td>
-                            <td><button style="background-color: #FF6B6B; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer;">🗑️ Remover</button></td>
+                            <td style="padding:8px;vertical-align:middle;">
+                                <input type="number" name="quantidade[<?= $p['id'] ?>]" value="<?= $p['quantidade'] ?>" min="1" max="<?= ($p['estoque'] ?? 9999) ?>" style="width:70px;padding:6px;border:1px solid #DDD;border-radius:4px;">
+                            </td>
+                            <td style="padding:8px;vertical-align:middle;"><?= format_price($p['preco']) ?></td>
+                            <td style="padding:8px;vertical-align:middle;"><strong><?= format_price($p['preco'] * $p['quantidade']) ?></strong></td>
+                            <td style="padding:8px;vertical-align:middle;">
+                                <button type="submit" name="remove" value="<?= $p['id'] ?>" style="background-color:#FF6B6B;color:white;border:none;padding:8px 10px;border-radius:4px;cursor:pointer;">🗑️ Remover</button>
+                            </td>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>
             </table>
+
+            <div style="margin-top:12px;">
+                <button type="submit" name="update" style="padding:10px 14px;background:#2ecc71;color:#fff;border:none;border-radius:6px;cursor:pointer;">Atualizar Quantidades</button>
+                <button type="submit" name="clear" value="1" style="padding:10px 14px;background:#e74c3c;color:#fff;border:none;border-radius:6px;cursor:pointer;margin-left:8px;">Limpar Carrinho</button>
+            </div>
         </div>
 
-        <div class="cart-summary">
+        <div class="cart-summary" style="width:320px;border:1px solid #eee;padding:14px;border-radius:8px;height:fit-content;">
             <h3>Resumo do Pedido</h3>
-            <div class="summary-row">
+            <div class="summary-row" style="display:flex;justify-content:space-between;">
                 <span>Subtotal:</span>
-                <span>R$ <?= number_format($total, 2, ',', '.') ?></span>
+                <span><?= format_price($total) ?></span>
             </div>
-            <div class="summary-row">
+            <div class="summary-row" style="display:flex;justify-content:space-between;">
                 <span>Frete:</span>
                 <span>R$ 0,00</span>
             </div>
-            <div class="summary-row">
+            <div class="summary-row" style="display:flex;justify-content:space-between;">
                 <span>Desconto:</span>
                 <span>-R$ 0,00</span>
             </div>
-            <div class="summary-row total">
+            <div class="summary-row total" style="display:flex;justify-content:space-between;font-weight:700;margin-top:10px;">
                 <span>Total:</span>
-                <span>R$ <?= number_format($total, 2, ',', '.') ?></span>
+                <span><?= format_price($total) ?></span>
             </div>
-            <button class="checkout-btn">✓ Finalizar Compra</button>
-            <a href="/tem-quase-tudo/index.php" style="display: block; text-align: center; margin-top: 10px; color: #FF9900; text-decoration: none; font-weight: 600;">← Continuar Comprando</a>
+
+            <div style="margin-top:12px;">
+                <a href="checkout.php" class="checkout-btn" style="display:inline-block;padding:10px 14px;background:#FF9900;color:#fff;border-radius:6px;text-decoration:none;">✓ Finalizar Compra</a>
+                <a href="/tem-quase-tudo/index.php" style="display:block;text-align:center;margin-top:10px;color:#FF9900;text-decoration:none;font-weight:600;">← Continuar Comprando</a>
+            </div>
         </div>
     </div>
+    </form>
 
 <?php endif; ?>
 

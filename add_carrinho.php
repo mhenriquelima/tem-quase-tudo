@@ -1,37 +1,42 @@
 <?php
 session_start();
-require_once "config.inc.php";
+require_once __DIR__ . '/config.inc.php';
+require_once __DIR__ . '/includes/functions.php';
 
 if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
-    die("ID inválido.");
+    header("Location: index.php?error=invalid_id");
+    exit;
 }
 
 $id = (int) $_GET['id'];
 
-$query = "SELECT *, (preco - (preco * (desconto/100))) AS preco_final 
-          FROM produtos 
-          WHERE id = $id 
-          LIMIT 1";
-
-$result = mysqli_query($conexao, $query);
-$produto = mysqli_fetch_assoc($result);
-
+$produto = get_product_by_id($conexao, $id);
 if (!$produto) {
-    die("Produto não encontrado.");
+    header("Location: index.php?error=not_found");
+    exit;
 }
 
-if (!isset($_SESSION['carrinho'])) {
+if (!isset($_SESSION['carrinho']) || !is_array($_SESSION['carrinho'])) {
     $_SESSION['carrinho'] = [];
 }
 
+if ($produto['estoque'] <= 0) {
+    header("Location: index.php?error=out_of_stock");
+    exit;
+}
+
 if (isset($_SESSION['carrinho'][$id])) {
-    $_SESSION['carrinho'][$id]['quantidade']++;
+    $currentQty = (int) $_SESSION['carrinho'][$id]['quantidade'];
+    if ($currentQty < $produto['estoque']) {
+        $_SESSION['carrinho'][$id]['quantidade'] = $currentQty + 1;
+    }
 } else {
     $_SESSION['carrinho'][$id] = [
         'id' => $produto['id'],
         'nome' => $produto['produto'],
         'preco' => $produto['preco_final'],
-        'quantidade' => 1
+        'quantidade' => 1,
+        'estoque' => $produto['estoque']
     ];
 }
 

@@ -1,120 +1,78 @@
-<?php include __DIR__ . '/includes/header.php'; ?>
+<?php
+include __DIR__ . '/includes/header.php';
+require_once __DIR__ . '/config.inc.php';
+require_once __DIR__ . '/includes/functions.php';
 
-<!-- Hero Section -->
+$products = get_products($conexao, 100);
+
+$section1 = array_slice($products, 0, 6);
+$section2 = array_slice($products, 6, 6);
+$section3 = array_slice($products, 12, 9999);
+?>
+
 <div class="hero">
     <h1>🎉 Bem-vindo ao Tem Quase Tudo</h1>
     <p>Encontre produtos incríveis com os melhores preços do mercado</p>
-    <button class="hero-btn">🛍️ Começar a Comprar</button>
+    <a href="#produtos" class="hero-btn">🛍️ Começar a Comprar</a>
 </div>
 
-<!-- Banner Promoção -->
 <div class="banner-promo">
     <div>
         <h2>🚀 Super Oferta do Dia!</h2>
         <p>Desconto de até 50% em produtos selecionados</p>
     </div>
-    <button class="banner-promo-btn">Ver Todas as Ofertas</button>
+    <a class="banner-promo-btn" href="#produtos">Ver Todas as Ofertas</a>
 </div>
 
-<?php
-require_once __DIR__ . "/config.inc.php";
+<?php function render_products_section($title, $items) {
+    ?>
+    <?php if (!empty($items)): ?>
+    <section id="produtos" style="margin:24px 0;">
+        <h2 class="section-title"><?= htmlspecialchars($title) ?></h2>
+        <div class="products-grid" style="display:flex;flex-wrap:wrap;gap:14px;">
+            <?php foreach ($items as $product): ?>
+                <div class="product-card" style="width:220px;border:1px solid #eee;padding:12px;border-radius:8px;">
+                    <div class="product-image" style="height:100px;display:flex;align-items:center;justify-content:center;font-size:32px;">
+                        <?php
+                            if (!empty($product['image']) && file_exists(__DIR__ . '/' . ltrim($product['image'], '/'))) {
+                                echo '<img src="'.htmlspecialchars($product['image']).'" alt="'.htmlspecialchars($product['name']).'" style="max-height:90px;max-width:100%;">';
+                            } else {
+                                echo '🛍️';
+                            }
+                        ?>
+                    </div>
+                    <div class="product-info" style="margin-top:8px;">
+                        <div class="product-category" style="font-size:0.85rem;color:#777;"><?php echo htmlspecialchars($product['category'] ?: ''); ?></div>
+                        <h3 class="product-name" style="font-size:1rem;margin:6px 0;"><?php echo htmlspecialchars($product['name']); ?></h3>
+                        <div class="product-rating" style="font-size:0.85rem;color:#f39c12;"><?php echo htmlspecialchars($product['rating'] ?: ''); ?></div>
 
-$query = "SELECT *, (preco - (preco * (desconto/100))) AS preco_final FROM produtos";
-$result = mysqli_query($conexao, $query);
+                        <div style="margin-top:8px;">
+                            <?php if ($product['desconto'] > 0): ?>
+                                <div style="font-size:0.85rem;color:#888;text-decoration:line-through;"><?php echo format_price($product['preco']); ?></div>
+                            <?php endif; ?>
+                            <div class="product-price" style="font-weight:700;"><?php echo format_price($product['preco_final']); ?></div>
+                        </div>
 
-$products = mysqli_fetch_all($result, MYSQLI_ASSOC);
-
-// Dividir em 3 seções: 0-5, 6-11, 12+
-$section1 = array_slice($products, 0, 6);
-$section2 = array_slice($products, 6, 6);
-$section3 = array_slice($products, 12);
+                        <div class="product-actions" style="margin-top:10px;display:flex;gap:8px;">
+                            <?php if ($product['estoque'] > 0): ?>
+                                <a href="add_carrinho.php?id=<?php echo $product['id']; ?>" class="btn-add-cart" style="padding:8px 10px;background:#FF9900;color:#fff;border-radius:6px;text-decoration:none;">🛒 Adicionar</a>
+                            <?php else: ?>
+                                <button disabled style="padding:8px 10px;border-radius:6px;background:#ccc;color:#fff;border:none;">Esgotado</button>
+                            <?php endif; ?>
+                            <a href="produto.php?id=<?php echo $product['id']; ?>" style="padding:8px 10px;border-radius:6px;border:1px solid #ddd;text-decoration:none;">Detalhes</a>
+                        </div>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    </section>
+    <?php endif; ?>
+    <?php
+}
 ?>
 
-<!-- Produtos em Destaque -->
-<?php if (!empty($section1)): ?>
-<section>
-    <h2 class="section-title">✨ Produtos em Destaque</h2>
-    <div class="products-grid">
-        <?php foreach ($section1 as $product): ?>
-            <div class="product-card">
-                <div class="product-image">
-                    <?php echo $product['emoji']; ?>
-                </div>
-                <div class="product-info">
-                    <span class="product-category"><?php echo htmlspecialchars($product['category']); ?></span>
-                    <h3 class="product-name"><?php echo htmlspecialchars($product['name']); ?></h3>
-                    <div class="product-rating"><?php echo $product['rating']; ?></div>
-                    <?php if ($product['original_price'] > $product['price']): ?>
-                        <span class="product-original-price">R$ <?php echo number_format($product['original_price'], 2, ',', '.'); ?></span>
-                    <?php endif; ?>
-                    <div class="product-price">R$ <?php echo number_format($product['price'], 2, ',', '.'); ?></div>
-                    <div class="product-actions">
-                        <a href="add_carrinho.php?id=<?php echo $product['id']; ?>" class="btn-add-cart"> 🛒 Adicionar </a>
-                        <button class="btn-wishlist">❤️</button>
-                    </div>
-                </div>
-            </div>
-        <?php endforeach; ?>
-    </div>
-</section>
-<?php endif; ?>
-
-<!-- Mais Vendidos -->
-<?php if (!empty($section2)): ?>
-<section>
-    <h2 class="section-title">🔥 Mais Vendidos</h2>
-    <div class="products-grid">
-        <?php foreach ($section2 as $product): ?>
-            <div class="product-card">
-                <div class="product-image">
-                    <?php echo $product['emoji']; ?>
-                </div>
-                <div class="product-info">
-                    <span class="product-category"><?php echo htmlspecialchars($product['category']); ?></span>
-                    <h3 class="product-name"><?php echo htmlspecialchars($product['name']); ?></h3>
-                    <div class="product-rating"><?php echo $product['rating']; ?></div>
-                    <?php if ($product['original_price'] > $product['price']): ?>
-                        <span class="product-original-price">R$ <?php echo number_format($product['original_price'], 2, ',', '.'); ?></span>
-                    <?php endif; ?>
-                    <div class="product-price">R$ <?php echo number_format($product['price'], 2, ',', '.'); ?></div>
-                    <div class="product-actions">
-                        <a href="add_carrinho.php?id=<?php echo $product['id']; ?>" class="btn-add-cart"> 🛒 Adicionar </a>
-                        <button class="btn-wishlist">❤️</button>
-                    </div>
-                </div>
-            </div>
-        <?php endforeach; ?>
-    </div>
-</section>
-<?php endif; ?>
-
-<!-- Outros Produtos -->
-<?php if (!empty($section3)): ?>
-<section>
-    <h2 class="section-title">📦 Outros Produtos</h2>
-    <div class="products-grid">
-        <?php foreach ($section3 as $product): ?>
-            <div class="product-card">
-                <div class="product-image">
-                    <?php echo $product['emoji']; ?>
-                </div>
-                <div class="product-info">
-                    <span class="product-category"><?php echo htmlspecialchars($product['category']); ?></span>
-                    <h3 class="product-name"><?php echo htmlspecialchars($product['name']); ?></h3>
-                    <div class="product-rating"><?php echo $product['rating']; ?></div>
-                    <?php if ($product['original_price'] > $product['price']): ?>
-                        <span class="product-original-price">R$ <?php echo number_format($product['original_price'], 2, ',', '.'); ?></span>
-                    <?php endif; ?>
-                    <div class="product-price">R$ <?php echo number_format($product['price'], 2, ',', '.'); ?></div>
-                    <div class="product-actions">
-                        <a href="add_carrinho.php?id=<?php echo $product['id']; ?>" class="btn-add-cart"> 🛒 Adicionar </a>
-                        <button class="btn-wishlist">❤️</button>
-                    </div>
-                </div>
-            </div>
-        <?php endforeach; ?>
-    </div>
-</section>
-<?php endif; ?>
+<?php render_products_section('✨ Produtos em Destaque', $section1); ?>
+<?php render_products_section('🔥 Mais Vendidos', $section2); ?>
+<?php render_products_section('📦 Outros Produtos', $section3); ?>
 
 <?php include __DIR__ . '/includes/footer.php'; ?>
