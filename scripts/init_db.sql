@@ -1,61 +1,29 @@
-DROP DATABASE IF EXISTS tem_quase_tudo_db;
-
-CREATE DATABASE tem_quase_tudo_db;
+CREATE DATABASE IF NOT EXISTS tem_quase_tudo_db;
 USE tem_quase_tudo_db;
 
-CREATE TABLE produtos (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    produto VARCHAR(100) NOT NULL,
-    descricao TEXT,
-    preco DECIMAL(10,2) NOT NULL,
-    estoque INT NOT NULL DEFAULT 0,
-    desconto DECIMAL(5,2) NOT NULL DEFAULT 0,
-    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-CREATE TABLE clientes (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  nome VARCHAR(255) NOT NULL,
-  email VARCHAR(255) NOT NULL,
-  senha VARCHAR(100) NOT NULL,
-  telefone VARCHAR(50),
-  endereco VARCHAR(255),
-  cidade VARCHAR(100)
+-- TABELA DE PRODUTOS
+CREATE TABLE IF NOT EXISTS `produtos` (
+  `id` INT AUTO_INCREMENT PRIMARY KEY,
+  `produto` VARCHAR(100) NOT NULL,
+  `descricao` TEXT,
+  `preco` DECIMAL(10,2) NOT NULL,
+  `estoque` INT NOT NULL DEFAULT 0,
+  `desconto` DECIMAL(5,2) NOT NULL DEFAULT 0,
+  `criado_em` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE IF NOT EXISTS `pedidos` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `cliente_id` INT NOT NULL,
-  `data_pedido` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `total` DECIMAL(10,2) NOT NULL DEFAULT 0.00,
-  `status` VARCHAR(50) NOT NULL DEFAULT 'pendente',
-  `endereco_entrega` TEXT NULL,
-  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  INDEX `idx_pedidos_cliente` (`cliente_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+-- TABELA DE CLIENTES
+CREATE TABLE IF NOT EXISTS `clientes` (
+  `id` INT AUTO_INCREMENT PRIMARY KEY,
+  `nome` VARCHAR(255) NOT NULL,
+  `email` VARCHAR(255) NOT NULL,
+  `senha` VARCHAR(100) NOT NULL,
+  `telefone` VARCHAR(50),
+  `endereco` VARCHAR(255),
+  `cidade` VARCHAR(100)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE IF NOT EXISTS `pedido_items` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `pedido_id` INT NOT NULL,
-  `produto_id` INT NULL,
-  `nome_produto` VARCHAR(255) NULL,
-  `quantidade` INT NOT NULL DEFAULT 1,
-  `preco_unitario` DECIMAL(10,2) NOT NULL DEFAULT 0.00,
-  `subtotal` DECIMAL(10,2) NOT NULL DEFAULT 0.00,
-  PRIMARY KEY (`id`),
-  INDEX `idx_pedido_items_pedido` (`pedido_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-ALTER TABLE `pedidos`
-  ADD CONSTRAINT `fk_pedidos_cliente`
-    FOREIGN KEY (`cliente_id`) REFERENCES `clientes`(`id`)
-    ON DELETE CASCADE ON UPDATE CASCADE;
-
-ALTER TABLE `pedido_items`
-  ADD CONSTRAINT `fk_items_pedido`
-    FOREIGN KEY (`pedido_id`) REFERENCES `pedidos`(`id`)
-    ON DELETE CASCADE ON UPDATE CASCADE;
-
+-- INSERIR PRODUTOS (NÃO DUPLICA)
 INSERT INTO produtos (produto, descricao, preco, estoque, desconto)
 VALUES
 ('Relógio que Corre ao Contrário', 'Marca o tempo no sentido inverso, ideal para quem vive de nostalgia.', 47.22, 12, 0),
@@ -88,22 +56,9 @@ VALUES
 ('Rádio que Captura Pensamentos Soltos', 'Toca músicas que você quase lembra.', 63.12, 6, 10),
 ('Cubo Perfeitamente Inútil', 'Objeto cúbico. Nada mais a declarar.', 1.99, 300, 0),
 ('Kit de Mini Tormentas', 'Nuvens pequenas que fazem chuvinhas de 3 segundos.', 39.50, 12, 0),
-('Faca que Não Corta', 'Ótima para quem não gosta de riscos… ou utilidade.', 7.70, 58, 0),
-('Livro de Receitas Impossíveis', 'Requer ingredientes inexistentes.', 32.00, 21, 5),
-('Moletom Autoconfortável', 'Ajusta o calor conforme seu nível de preguiça.', 66.90, 13, 0),
-('Gato Mecânico que Não Mia', 'Emite sons aleatórios de vibração.', 120.00, 4, 15),
-('Lanterna de Escuridão', 'Ao ligar, escurece tudo ao redor.', 44.40, 22, 0),
-('Pilha Infinita que Não Funciona', 'Dura para sempre, mas não liga nada.', 9.99, 99, 0),
-('Cajado de Erro de Sistema', 'Às vezes emite mensagens de bug aleatórias.', 150.75, 3, 10),
-('Espelho que Não Reflete Você', 'Mostra apenas possibilidades alternativas.', 82.22, 7, 0),
-('Ração para Criaturas Imaginárias', 'Sabor bacon metafísico.', 6.80, 60, 0),
-('Colar que Brilha Só no Escuro Profundo', 'Precisa de escuridão absoluta para funcionar.', 12.50, 34, 2),
-('Bússola Confusa', 'Aponta sempre para “talvez”.', 18.30, 45, 0),
-('Capuz Anticuriosidade', 'Ninguém pergunta nada quando você usa.', 55.00, 15, 7),
-('Aromatizador de Memórias', 'Cheiro de dias que talvez tenham acontecido.', 17.88, 39, 0),
-('Copo que Transborda Quando Cheio', 'Funciona exatamente como um copo comum.', 4.20, 150, 0),
-('Martelo Suave', 'Feito de espuma. Zero impacto, muito estilo.', 13.13, 52, 0),
-('Colher Telepática', 'Sabe o que você quer comer, mas não ajuda.', 10.99, 80, 0),
-('Cinto do Destino Aleatório', 'Ajusta-se sozinho sem critério algum.', 27.45, 26, 5),
-('Bolsa com Eco Interno', 'Repete tudo que você coloca dentro.', 60.60, 11, 0),
-('Tinta Invisível Barata', 'Praticamente água, mas com etiqueta estilosa.', 3.33, 120, 0);
+('Faca que Não Corta', 'Ótima para quem não gosta de risco.', 16.75, 45, 0),
+('Espelho que Mostra o Reflexo Errado', 'Veja-se como um alienígena!', 29.99, 22, 0),
+('Cinto que Aperta Sozinho', 'Ideal para quem quer perder peso sem esforço.', 54.60, 14, 7),
+('Lápis que Apaga Só o que Você Não Quer', 'Perfeito para confusões criativas.', 3.33, 88, 0),
+('Relógio de Sol Portátil', 'Funciona melhor em dias nublados.', 22.45, 18, 0),
+('Bola de Cristal Quebrada', 'Ainda dá para ver o futuro… com algumas distorções.', 45.00, 11, 0);
