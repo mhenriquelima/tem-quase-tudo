@@ -1,3 +1,5 @@
+DROP DATABASE IF EXISTS tem_quase_tudo_db;
+
 CREATE DATABASE IF NOT EXISTS tem_quase_tudo_db
   CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
