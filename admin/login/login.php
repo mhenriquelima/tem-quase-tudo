@@ -34,8 +34,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 						session_regenerate_id(true);
 						$_SESSION['cliente_id'] = $id;
 						$_SESSION['cliente_nome'] = $nome;
-						header('Location: /tem-quase-tudo/index.php');
-						exit;
+						// Marcar usuário como administrador somente se o email bater com ADMIN_EMAIL
+						if (defined('ADMIN_EMAIL') && strtolower($email) === strtolower(ADMIN_EMAIL)) {
+							$_SESSION['is_admin'] = true;
+							header('Location: /tem-quase-tudo/admin/index.php');
+							exit;
+						} else {
+							// Não é admin - garantir flag falsa
+							unset($_SESSION['is_admin']);
+							header('Location: /tem-quase-tudo/index.php');
+							exit;
+						}
 					} else {
 						$error = 'E-mail ou senha inválidos.';
 					}

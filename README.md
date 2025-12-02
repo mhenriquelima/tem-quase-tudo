@@ -76,7 +76,6 @@ CREATE TABLE IF NOT EXISTS `pedidos` (
   INDEX `idx_pedidos_cliente` (`cliente_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Tabela de itens do pedido (opcional, útil para histórico detalhado)
 CREATE TABLE IF NOT EXISTS `pedido_items` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `pedido_id` INT NOT NULL,

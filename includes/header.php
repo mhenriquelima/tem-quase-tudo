@@ -18,9 +18,11 @@ $cart_count = count($_SESSION['carrinho'] ?? []);
                 Bem-vindo ao <strong>Tem Quase Tudo</strong>
             </div>
             <div>
-                <a href="/tem-quase-tudo/">Sobre</a>
-                <a href="/tem-quase-tudo/">Contato</a>
-                <a href="/tem-quase-tudo/admin/">Admin</a>
+                <a href="/tem-quase-tudo/sobre.php">Sobre</a>
+                <a href="/tem-quase-tudo/contato.php">Contato</a>
+                <?php if (isset($_SESSION['is_admin']) && $_SESSION['is_admin'] === true): ?>
+                    <a href="/tem-quase-tudo/admin/">Admin</a>
+                <?php endif; ?>
             </div>
         </div>
 
