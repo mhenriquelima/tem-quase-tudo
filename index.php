@@ -16,6 +16,10 @@
     <button class="banner-promo-btn">Ver Todas as Ofertas</button>
 </div>
 
+<?php if (isset($_GET['added']) && $_GET['added'] == 1): ?>
+    <div class="notice success">Produto adicionado ao carrinho.</div>
+<?php endif; ?>
+
 <?php
 include __DIR__ . '/includes/products.php';
 
@@ -44,7 +48,7 @@ $section3 = array_slice($products, 12);
                     <?php endif; ?>
                     <div class="product-price">R$ <?php echo number_format($product['price'], 2, ',', '.'); ?></div>
                     <div class="product-actions">
-                        <button class="btn-add-cart">🛒 Adicionar</button>
+                        <a class="btn-add-cart" href="add_carrinho.php?id=<?php echo $product['id']; ?>">🛒 Adicionar</a>
                         <button class="btn-wishlist">❤️</button>
                     </div>
                 </div>
@@ -73,7 +77,7 @@ $section3 = array_slice($products, 12);
                     <?php endif; ?>
                     <div class="product-price">R$ <?php echo number_format($product['price'], 2, ',', '.'); ?></div>
                     <div class="product-actions">
-                        <button class="btn-add-cart">🛒 Adicionar</button>
+                        <a class="btn-add-cart" href="add_carrinho.php?id=<?php echo $product['id']; ?>">🛒 Adicionar</a>
                         <button class="btn-wishlist">❤️</button>
                     </div>
                 </div>
@@ -102,7 +106,7 @@ $section3 = array_slice($products, 12);
                     <?php endif; ?>
                     <div class="product-price">R$ <?php echo number_format($product['price'], 2, ',', '.'); ?></div>
                     <div class="product-actions">
-                        <button class="btn-add-cart">🛒 Adicionar</button>
+                        <a class="btn-add-cart" href="add_carrinho.php?id=<?php echo $product['id']; ?>">🛒 Adicionar</a>
                         <button class="btn-wishlist">❤️</button>
                     </div>
                 </div>
