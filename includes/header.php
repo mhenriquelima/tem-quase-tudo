@@ -1,6 +1,9 @@
 <?php
-session_start();
+if (session_status() !== PHP_SESSION_ACTIVE) {
+    session_start();
+}
 $cart_count = count($_SESSION['carrinho'] ?? []);
+$fav_count = count($_SESSION['favoritos'] ?? []);
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -36,9 +39,14 @@ $cart_count = count($_SESSION['carrinho'] ?? []);
             </form>
 
             <div class="header-actions">
-                <a href="/tem-quase-tudo/" class="header-action">
+                <a href="/tem-quase-tudo/favoritos.php" class="header-action" title="Ver meus favoritos">
                     <span class="header-action-icon">❤️</span>
                     <span>Favoritos</span>
+                    <?php if ($fav_count > 0): ?>
+                        <span id="fav-count" class="fav-count"><?php echo $fav_count; ?></span>
+                    <?php else: ?>
+                        <span id="fav-count" class="fav-count">0</span>
+                    <?php endif; ?>
                 </a>
                 <?php if (isset($_SESSION['cliente_id'])): ?>
                     <a href="/tem-quase-tudo/conta.php" class="header-action">
@@ -61,16 +69,7 @@ $cart_count = count($_SESSION['carrinho'] ?? []);
             </div>
         </div>
 
-        <!-- Barra de Categorias -->
         <div class="categories-bar">
-            <a href="/tem-quase-tudo/" class="category-link">🏠 Início</a>
-            <a href="/tem-quase-tudo/" class="category-link">📱 Eletrônicos</a>
-            <a href="/tem-quase-tudo/" class="category-link">👔 Roupas</a>
-            <a href="/tem-quase-tudo/" class="category-link">📚 Livros</a>
-            <a href="/tem-quase-tudo/" class="category-link">🏠 Casa</a>
-            <a href="/tem-quase-tudo/" class="category-link">🎮 Jogos</a>
-            <a href="/tem-quase-tudo/" class="category-link">⚽ Esportes</a>
-            <a href="/tem-quase-tudo/" class="category-link">🎨 Artes</a>
         </div>
     </header>
 
