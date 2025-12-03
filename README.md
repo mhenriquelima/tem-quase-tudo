@@ -40,7 +40,65 @@ Além disso, haverá uma **área administrativa** destinada ao gerenciamento de 
 O projeto terá foco na **usabilidade**, **organização do código** e no funcionamento básico das operações **CRUD (Create, Read, Update, Delete)**.
 
 ---
-## Criar e Popular Banco de Dados pelo admin
+## Código SQL para criar o banco de dados do projeto
+```
+CREATE DATABASE tem_quase_tudo_db;
+USE tem_quase_tudo_db;
+
+CREATE TABLE produtos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    produto VARCHAR(100) NOT NULL,
+    descricao TEXT,
+    preco DECIMAL(10,2) NOT NULL,
+    estoque INT NOT NULL DEFAULT 0,
+    desconto DECIMAL(5,2) NOT NULL DEFAULT 0, -- porcentagem de desconto
+    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+CREATE TABLE clientes (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nome VARCHAR(255) NOT NULL,
+  email VARCHAR(255) NOT NULL,
+  senha VARCHAR(100) NOT NULL,
+  telefone VARCHAR(50),
+  endereco VARCHAR(255),
+  cidade VARCHAR(100)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS `pedidos` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `cliente_id` INT NOT NULL,
+  `data_pedido` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `total` DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+  `status` VARCHAR(50) NOT NULL DEFAULT 'pendente',
+  `endereco_entrega` TEXT NULL,
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  INDEX `idx_pedidos_cliente` (`cliente_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `pedido_items` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `pedido_id` INT NOT NULL,
+  `produto_id` INT NULL,
+  `nome_produto` VARCHAR(255) NULL,
+  `quantidade` INT NOT NULL DEFAULT 1,
+  `preco_unitario` DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+  `subtotal` DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+  PRIMARY KEY (`id`),
+  INDEX `idx_pedido_items_pedido` (`pedido_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+ALTER TABLE `pedidos`
+  ADD CONSTRAINT `fk_pedidos_cliente`
+    FOREIGN KEY (`cliente_id`) REFERENCES `clientes`(`id`)
+    ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE `pedido_items`
+  ADD CONSTRAINT `fk_items_pedido`
+    FOREIGN KEY (`pedido_id`) REFERENCES `pedidos`(`id`)
+    ON DELETE CASCADE ON UPDATE CASCADE;
+
+```
 ---
 
 ## Equipe

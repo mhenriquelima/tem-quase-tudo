@@ -2,22 +2,29 @@
 
 <!-- Hero Section -->
 <div class="hero">
-    <h1>🎉 Bem-vindo ao Tem Quase Tudo</h1>
+    <h1>Bem-vindo ao Tem Quase Tudo</h1>
     <p>Encontre produtos incríveis com os melhores preços do mercado</p>
-    <button class="hero-btn">🛍️ Começar a Comprar</button>
+    <button class="hero-btn">Começar a Comprar</button>
 </div>
 
 <!-- Banner Promoção -->
 <div class="banner-promo">
     <div>
-        <h2>🚀 Super Oferta do Dia!</h2>
+        <h2>Super Oferta do Dia!</h2>
         <p>Desconto de até 50% em produtos selecionados</p>
     </div>
     <button class="banner-promo-btn">Ver Todas as Ofertas</button>
 </div>
 
+<?php if (isset($_GET['added']) && $_GET['added'] == 1): ?>
+    <div class="notice success">Produto adicionado ao carrinho.</div>
+<?php endif; ?>
+
 <?php
 include __DIR__ . '/includes/products.php';
+
+// favoritos da sessão
+$favorites = $_SESSION['favoritos'] ?? [];
 
 // Dividir em 3 seções: 0-5, 6-11, 12+
 $section1 = array_slice($products, 0, 6);
@@ -28,7 +35,7 @@ $section3 = array_slice($products, 12);
 <!-- Produtos em Destaque -->
 <?php if (!empty($section1)): ?>
 <section>
-    <h2 class="section-title">✨ Produtos em Destaque</h2>
+    <h2 class="section-title">Produtos em Destaque</h2>
     <div class="products-grid">
         <?php foreach ($section1 as $product): ?>
             <div class="product-card">
@@ -44,8 +51,8 @@ $section3 = array_slice($products, 12);
                     <?php endif; ?>
                     <div class="product-price">R$ <?php echo number_format($product['price'], 2, ',', '.'); ?></div>
                     <div class="product-actions">
-                        <button class="btn-add-cart">🛒 Adicionar</button>
-                        <button class="btn-wishlist">❤️</button>
+                        <a class="btn-add-cart" href="add_carrinho.php?id=<?php echo $product['id']; ?>">🛒 Adicionar</a>
+                        <button class="btn-wishlist<?php echo isset($favorites[$product['id']]) ? ' favorited' : ''; ?>" data-id="<?php echo $product['id']; ?>">❤️</button>
                     </div>
                 </div>
             </div>
@@ -57,7 +64,7 @@ $section3 = array_slice($products, 12);
 <!-- Mais Vendidos -->
 <?php if (!empty($section2)): ?>
 <section>
-    <h2 class="section-title">🔥 Mais Vendidos</h2>
+    <h2 class="section-title">Mais Vendidos</h2>
     <div class="products-grid">
         <?php foreach ($section2 as $product): ?>
             <div class="product-card">
@@ -73,8 +80,8 @@ $section3 = array_slice($products, 12);
                     <?php endif; ?>
                     <div class="product-price">R$ <?php echo number_format($product['price'], 2, ',', '.'); ?></div>
                     <div class="product-actions">
-                        <button class="btn-add-cart">🛒 Adicionar</button>
-                        <button class="btn-wishlist">❤️</button>
+                        <a class="btn-add-cart" href="add_carrinho.php?id=<?php echo $product['id']; ?>">🛒 Adicionar</a>
+                        <button class="btn-wishlist<?php echo isset($favorites[$product['id']]) ? ' favorited' : ''; ?>" data-id="<?php echo $product['id']; ?>">❤️</button>
                     </div>
                 </div>
             </div>
@@ -86,7 +93,7 @@ $section3 = array_slice($products, 12);
 <!-- Outros Produtos -->
 <?php if (!empty($section3)): ?>
 <section>
-    <h2 class="section-title">📦 Outros Produtos</h2>
+    <h2 class="section-title">Outros Produtos</h2>
     <div class="products-grid">
         <?php foreach ($section3 as $product): ?>
             <div class="product-card">
@@ -102,8 +109,8 @@ $section3 = array_slice($products, 12);
                     <?php endif; ?>
                     <div class="product-price">R$ <?php echo number_format($product['price'], 2, ',', '.'); ?></div>
                     <div class="product-actions">
-                        <button class="btn-add-cart">🛒 Adicionar</button>
-                        <button class="btn-wishlist">❤️</button>
+                        <a class="btn-add-cart" href="add_carrinho.php?id=<?php echo $product['id']; ?>">🛒 Adicionar</a>
+                        <button class="btn-wishlist<?php echo isset($favorites[$product['id']]) ? ' favorited' : ''; ?>" data-id="<?php echo $product['id']; ?>">❤️</button>
                     </div>
                 </div>
             </div>
@@ -113,3 +120,45 @@ $section3 = array_slice($products, 12);
 <?php endif; ?>
 
 <?php include __DIR__ . '/includes/footer.php'; ?>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const favButtons = document.querySelectorAll('.btn-wishlist');
+    const favCountEl = document.getElementById('fav-count');
+
+    async function toggleFav(id) {
+        const fd = new FormData();
+        fd.append('id', id);
+        try {
+            const res = await fetch('toggle_favorito.php', {
+                method: 'POST',
+                body: fd,
+                credentials: 'same-origin',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            });
+            return await res.json();
+        } catch (e) {
+            console.error('Erro ao alternar favorito', e);
+            return null;
+        }
+    }
+
+    favButtons.forEach(btn => {
+        btn.addEventListener('click', async function (e) {
+            e.preventDefault();
+            const id = this.dataset.id;
+            const data = await toggleFav(id);
+            if (!data) return;
+            if (data.success) {
+                if (data.favorited) {
+                    this.classList.add('favorited');
+                } else {
+                    this.classList.remove('favorited');
+                }
+                if (favCountEl) favCountEl.textContent = data.count;
+            }
+        });
+    });
+});
+</script>

@@ -1,6 +1,9 @@
 <?php
-session_start();
+if (session_status() !== PHP_SESSION_ACTIVE) {
+    session_start();
+}
 $cart_count = count($_SESSION['carrinho'] ?? []);
+$fav_count = count($_SESSION['favoritos'] ?? []);
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -18,9 +21,11 @@ $cart_count = count($_SESSION['carrinho'] ?? []);
                 Bem-vindo ao <strong>Tem Quase Tudo</strong>
             </div>
             <div>
-                <a href="/tem-quase-tudo/">Sobre</a>
-                <a href="/tem-quase-tudo/">Contato</a>
-                <a href="/tem-quase-tudo/admin/">Admin</a>
+                <a href="/tem-quase-tudo/sobre.php">Sobre</a>
+                <a href="/tem-quase-tudo/contato.php">Contato</a>
+                <?php if (isset($_SESSION['is_admin']) && $_SESSION['is_admin'] === true): ?>
+                    <a href="/tem-quase-tudo/admin/">Admin</a>
+                <?php endif; ?>
             </div>
         </div>
 
@@ -34,14 +39,26 @@ $cart_count = count($_SESSION['carrinho'] ?? []);
             </form>
 
             <div class="header-actions">
-                <a href="/tem-quase-tudo/" class="header-action">
+                <a href="/tem-quase-tudo/favoritos.php" class="header-action" title="Ver meus favoritos">
                     <span class="header-action-icon">❤️</span>
                     <span>Favoritos</span>
+                    <?php if ($fav_count > 0): ?>
+                        <span id="fav-count" class="fav-count"><?php echo $fav_count; ?></span>
+                    <?php else: ?>
+                        <span id="fav-count" class="fav-count">0</span>
+                    <?php endif; ?>
                 </a>
-                <a href="/tem-quase-tudo/" class="header-action">
-                    <span class="header-action-icon">👤</span>
-                    <span>Conta</span>
-                </a>
+                <?php if (isset($_SESSION['cliente_id'])): ?>
+                    <a href="/tem-quase-tudo/conta.php" class="header-action">
+                        <span class="header-action-icon">👤</span>
+                        <span>Conta</span>
+                    </a>
+                <?php else: ?>
+                    <a href="/tem-quase-tudo/admin/login/login.php" class="header-action">
+                        <span class="header-action-icon">👤</span>
+                        <span>Conta</span>
+                    </a>
+                <?php endif; ?>
                 <a href="/tem-quase-tudo/carrinho.php" class="header-action">
                     <span class="header-action-icon">🛒</span>
                     <span>Carrinho</span>
@@ -52,16 +69,7 @@ $cart_count = count($_SESSION['carrinho'] ?? []);
             </div>
         </div>
 
-        <!-- Barra de Categorias -->
         <div class="categories-bar">
-            <a href="/tem-quase-tudo/" class="category-link">🏠 Início</a>
-            <a href="/tem-quase-tudo/" class="category-link">📱 Eletrônicos</a>
-            <a href="/tem-quase-tudo/" class="category-link">👔 Roupas</a>
-            <a href="/tem-quase-tudo/" class="category-link">📚 Livros</a>
-            <a href="/tem-quase-tudo/" class="category-link">🏠 Casa</a>
-            <a href="/tem-quase-tudo/" class="category-link">🎮 Jogos</a>
-            <a href="/tem-quase-tudo/" class="category-link">⚽ Esportes</a>
-            <a href="/tem-quase-tudo/" class="category-link">🎨 Artes</a>
         </div>
     </header>
 
