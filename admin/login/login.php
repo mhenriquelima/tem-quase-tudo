@@ -64,33 +64,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html lang="pt-BR">
 <head>
 	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Login - Administração</title>
-	<style>
-		body{font-family: Arial, sans-serif; padding:20px}
-		.box{max-width:420px;margin:40px auto;padding:16px;border:1px solid #ddd;border-radius:6px}
-		label{display:block;margin-top:8px}
-		input[type="email"],input[type="password"]{width:100%;padding:8px;margin-top:4px}
-		.error{color:#a00;margin-bottom:10px}
-	</style>
+	<link rel="stylesheet" href="/tem-quase-tudo/assets/styles.css">
 </head>
-<body>
-	<div class="box">
-		<h2>Login de Cliente (Admin)</h2>
+<body class="admin-login-page">
+	<div class="admin-login-box">
+		<h2>🔐 Login</h2>
 		<?php if ($error): ?>
-			<div class="error"><?php echo htmlspecialchars($error); ?></div>
+			<div class="admin-login-error"><?php echo htmlspecialchars($error); ?></div>
 		<?php endif; ?>
 
-		<form method="post" action="">
+		<form method="post" action="" class="admin-login-form">
 			<label for="email">E-mail</label>
-			<input type="email" id="email" name="email" required value="<?php echo htmlspecialchars($_POST['email'] ?? ''); ?>">
+			<input type="email" id="email" name="email" required value="<?php echo htmlspecialchars($_POST['email'] ?? ''); ?>" placeholder="seu.email@exemplo.com">
 
 			<label for="senha">Senha</label>
-			<input type="password" id="senha" name="senha" required>
+			<input type="password" id="senha" name="senha" required placeholder="Sua senha">
 
-			<div style="margin-top:12px">
+			<div class="admin-login-actions">
 				<button type="submit">Entrar</button>
-				<a href="/tem-quase-tudo/">Voltar ao site</a>
-				<a href="/tem-quase-tudo/admin/clientes/cadastrar_cliente.php" style="margin-left:12px">Ainda não tem conta? Cadastre-se</a>
+				<a href="/tem-quase-tudo/">← Voltar ao site</a>
+				<a href="/tem-quase-tudo/admin/clientes/cadastrar_cliente.php">Cadastre-se</a>
 			</div>
 		</form>
 	</div>
