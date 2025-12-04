@@ -1,28 +1,9 @@
 <?php
 require_once("../config.inc.php");
 
-if (isset($_POST['salvar'])) {
-
-    $id         = intval($_GET['id']);
-    $produto = $_POST['produto'];
-    $descricao   = $_POST['descricao'];
-    $preco       = $_POST['preco'];
-    $estoque     = $_POST['estoque'];
-    $desconto    = $_POST['desconto'];
-
-    $update = "UPDATE produtos 
-               SET produto='$produto', descricao='$descricao', preco='$preco',
-                   estoque='$estoque', desconto='$desconto'
-               WHERE id = $id";
-
-    if (mysqli_query($conexao, $update)) {
-        echo "Produto atualizado com sucesso!";
-        echo '<br><a href="index.php">Voltar</a>';
-        exit;
-    } else {
-        echo "Erro ao atualizar: " . mysqli_error($conexao);
-    }
-}
+$errors = [];
+$sucesso = false;
+$produto = [];
 
 if (!isset($_GET['id']) || empty($_GET['id'])) {
     die("Erro: nenhum ID foi passado na URL.");
@@ -30,42 +11,144 @@ if (!isset($_GET['id']) || empty($_GET['id'])) {
 
 $id = intval($_GET['id']);
 
-$query = "SELECT * FROM produtos WHERE id = $id";
-$resultado = mysqli_query($conexao, $query);
+if (isset($_POST['salvar'])) {
+    $produto_nome = trim($_POST['produto'] ?? '');
+    $descricao = trim($_POST['descricao'] ?? '');
+    $preco = trim($_POST['preco'] ?? '');
+    $estoque = trim($_POST['estoque'] ?? '');
+    $desconto = trim($_POST['desconto'] ?? '0');
 
-if (!$resultado || mysqli_num_rows($resultado) == 0) {
-    die("Erro: produto não encontrado.");
+    // Validação
+    if ($produto_nome === '') {
+        $errors[] = 'O nome do produto é obrigatório.';
+    }
+    if ($preco === '' || !is_numeric($preco)) {
+        $errors[] = 'O preço é obrigatório e deve ser um número.';
+    }
+    if ($estoque === '' || !is_numeric($estoque)) {
+        $errors[] = 'O estoque é obrigatório e deve ser um número.';
+    }
+
+    if (empty($errors)) {
+        $update = "UPDATE produtos SET produto=?, descricao=?, preco=?, estoque=?, desconto=? WHERE id=?";
+        $stmt = mysqli_prepare($conexao, $update);
+        if ($stmt) {
+            mysqli_stmt_bind_param($stmt, 'ssddii', $produto_nome, $descricao, $preco, $desconto, $estoque, $id);
+            if (mysqli_stmt_execute($stmt)) {
+                $sucesso = true;
+            } else {
+                $errors[] = 'Erro ao atualizar: ' . mysqli_stmt_error($stmt);
+            }
+            mysqli_stmt_close($stmt);
+        } else {
+            $errors[] = 'Erro ao preparar query: ' . mysqli_error($conexao);
+        }
+    }
+} 
+
+// Buscar produto para editar
+$query = "SELECT * FROM produtos WHERE id = ?";
+$stmt = mysqli_prepare($conexao, $query);
+if ($stmt) {
+    mysqli_stmt_bind_param($stmt, 'i', $id);
+    mysqli_stmt_execute($stmt);
+    $resultado = mysqli_stmt_get_result($stmt);
+    $produto = mysqli_fetch_assoc($resultado);
+    mysqli_stmt_close($stmt);
+    
+    if (!$produto) {
+        die("Erro: produto não encontrado.");
+    }
+} else {
+    die("Erro ao preparar query: " . mysqli_error($conexao));
 }
-
-$produto = mysqli_fetch_assoc($resultado);
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
 <head>
-    <title>Editar Produto</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Produto - Tem Quase Tudo</title>
+    <link rel="stylesheet" href="/tem-quase-tudo/assets/admin.css">
 </head>
 <body>
-<h1>Editar Produto</h1>
 
-<form method="post">
-    Produto: <br>
-    <input type="text" name="produto" value="<?= $produto['produto'] ?>" required><br><br>
+<div class="admin-header">
+    <a href="/tem-quase-tudo/" class="admin-header-title">
+        <span>📦</span>
+        <span>Tem Quase Tudo - Admin</span>
+    </a>
+    <div class="admin-header-actions">
+        <a href="/tem-quase-tudo/" class="btn btn-secondary btn-small">← Voltar ao site</a>
+    </div>
+</div>
 
-    Descrição: <br>
-    <textarea name="descricao"><?= $produto['descricao'] ?></textarea><br><br>
+<div class="admin-container">
+    <div class="admin-main" style="max-width: 700px;">
+        <h1 class="admin-page-title">Editar Produto</h1>
+        <p class="admin-page-subtitle">ID: <?= htmlspecialchars($id) ?></p>
 
-    Preço: <br>
-    <input type="number" step="0.01" name="preco" value="<?= $produto['preco'] ?>" required><br><br>
+        <?php if ($sucesso): ?>
+            <div class="alert alert-success">
+                <span class="alert-icon">✓</span>
+                <div class="alert-content">
+                    <strong>Sucesso!</strong>
+                    <p>Produto atualizado com sucesso. <a href="listar_produtos.php" style="color: inherit; text-decoration: underline; font-weight: 600;">Ver produtos</a></p>
+                </div>
+            </div>
+        <?php endif; ?>
 
-    Estoque: <br>
-    <input type="number" name="estoque" value="<?= $produto['estoque'] ?>" required><br><br>
+        <?php if (!empty($errors)): ?>
+            <div class="alert alert-error">
+                <span class="alert-icon">⚠️</span>
+                <div class="alert-content">
+                    <strong>Erros no formulário:</strong>
+                    <ul>
+                        <?php foreach ($errors as $e): ?>
+                            <li><?= htmlspecialchars($e) ?></li>
+                        <?php endforeach; ?>
+                    </ul>
+                </div>
+            </div>
+        <?php endif; ?>
 
-    Desconto (%): <br>
-    <input type="number" step="0.01" name="desconto" value="<?= $produto['desconto'] ?>"><br><br>
-    
-    <button type="submit" name="salvar">Salvar</button>
-</form>
-<a href="index.php">Voltar</a>
+        <form method="post" class="admin-form">
+            <div class="form-group">
+                <label for="produto">Nome do Produto <span>*</span></label>
+                <input type="text" name="produto" id="produto" value="<?= htmlspecialchars($produto['produto']) ?>" required placeholder="Ex: Caneca Autopensante">
+            </div>
+
+            <div class="form-group">
+                <label for="descricao">Descrição</label>
+                <textarea name="descricao" id="descricao" placeholder="Descrição detalhada do produto"><?= htmlspecialchars($produto['descricao']) ?></textarea>
+            </div>
+
+            <div class="form-group-row">
+                <div class="form-group">
+                    <label for="preco">Preço (R$) <span>*</span></label>
+                    <input type="number" step="0.01" name="preco" id="preco" value="<?= htmlspecialchars($produto['preco']) ?>" required placeholder="0.00">
+                </div>
+
+                <div class="form-group">
+                    <label for="estoque">Estoque (Unidades) <span>*</span></label>
+                    <input type="number" name="estoque" id="estoque" value="<?= htmlspecialchars($produto['estoque']) ?>" required placeholder="0">
+                </div>
+
+                <div class="form-group">
+                    <label for="desconto">Desconto (%)</label>
+                    <input type="number" step="0.01" name="desconto" id="desconto" value="<?= htmlspecialchars($produto['desconto']) ?>" placeholder="0">
+                    <span class="form-help">Deixe em branco ou 0 para sem desconto</span>
+                </div>
+            </div>
+
+            <div class="btn-group">
+                <button type="submit" name="salvar" class="btn btn-primary btn-large">💾 Salvar Alterações</button>
+                <a href="listar_produtos.php" class="btn btn-secondary btn-large">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
 </body>
 </html>

@@ -102,51 +102,93 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html lang="pt-BR">
 <head>
     <meta charset="utf-8">
-    <title>Editar Cliente</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Cliente - Tem Quase Tudo</title>
+    <link rel="stylesheet" href="/tem-quase-tudo/assets/admin.css">
 </head>
 <body>
 
-<h1>Editar Cliente</h1>
-
-<?php if (!empty($errors)): ?>
-    <div style="color:red;">
-        <strong>Erros:</strong>
-        <ul>
-            <?php foreach ($errors as $e): ?>
-                <li><?= htmlspecialchars($e) ?></li>
-            <?php endforeach; ?>
-        </ul>
+<div class="admin-header">
+    <a href="/tem-quase-tudo/" class="admin-header-title">
+        <span>📦</span>
+        <span>Tem Quase Tudo - Admin</span>
+    </a>
+    <div class="admin-header-actions">
+        <a href="/tem-quase-tudo/" class="btn btn-secondary btn-small">← Voltar ao site</a>
     </div>
-<?php endif; ?>
+</div>
 
-<form method="post" action="">
-    <label for="nome">Nome *</label>
-    <input type="text" name="nome" id="nome" value="<?= htmlspecialchars($nome) ?>" required>
+<div class="admin-container">
+    <div class="admin-main" style="max-width: 600px;">
+        <h1 class="admin-page-title">Editar Cliente</h1>
+        <p class="admin-page-subtitle">Atualize os dados do cliente</p>
 
-    <label for="email">E-mail *</label>
-    <input type="email" name="email" id="email" value="<?= htmlspecialchars($email) ?>" required>
+        <?php if (!empty($errors)): ?>
+            <div class="alert alert-error">
+                <span class="alert-icon">⚠️</span>
+                <div class="alert-content">
+                    <strong>Erros no formulário:</strong>
+                    <ul>
+                        <?php foreach ($errors as $e): ?>
+                            <li><?= htmlspecialchars($e) ?></li>
+                        <?php endforeach; ?>
+                    </ul>
+                </div>
+            </div>
+        <?php endif; ?>
 
-    <label for="telefone">Telefone</label>
-    <input type="text" name="telefone" id="telefone" value="<?= htmlspecialchars($telefone) ?>">
+        <form method="post" action="" class="admin-form">
+            <div class="form-group">
+                <label for="nome">Nome <span>*</span></label>
+                <input type="text" name="nome" id="nome" value="<?= htmlspecialchars($nome) ?>" required placeholder="Nome completo">
+            </div>
 
-    <label for="endereco">Endereço</label>
-    <input type="text" name="endereco" id="endereco" value="<?= htmlspecialchars($endereco) ?>">
+            <div class="form-group">
+                <label for="email">E-mail <span>*</span></label>
+                <input type="email" name="email" id="email" value="<?= htmlspecialchars($email) ?>" required placeholder="seu.email@exemplo.com">
+            </div>
 
-    <label for="cidade">Cidade</label>
-    <input type="text" name="cidade" id="cidade" value="<?= htmlspecialchars($cidade) ?>">
+            <div class="form-group-inline">
+                <div class="form-group">
+                    <label for="telefone">Telefone</label>
+                    <input type="tel" name="telefone" id="telefone" value="<?= htmlspecialchars($telefone) ?>" placeholder="(11) 98765-4321">
+                </div>
 
-    <p>Deixe os campos de senha em branco para manter a senha atual.</p>
-    <label for="senha">Senha</label>
-    <input type="password" name="senha" id="senha" value="">
+                <div class="form-group">
+                    <label for="cidade">Cidade</label>
+                    <input type="text" name="cidade" id="cidade" value="<?= htmlspecialchars($cidade) ?>" placeholder="São Paulo">
+                </div>
+            </div>
 
-    <label for="senha_confirm">Confirme a senha</label>
-    <input type="password" name="senha_confirm" id="senha_confirm" value="">
+            <div class="form-group">
+                <label for="endereco">Endereço</label>
+                <input type="text" name="endereco" id="endereco" value="<?= htmlspecialchars($endereco) ?>" placeholder="Rua, número, complemento">
+            </div>
 
-    <div style="margin-top:12px">
-        <button type="submit">Salvar</button>
-        <a href="listar_cliente.php" style="margin-left:10px">Cancelar</a>
+            <div style="background-color: var(--light-gray); padding: 14px; border-radius: 6px; margin-bottom: 20px; font-size: 14px; color: var(--text-gray);">
+                <strong>Deixe os campos de senha em branco para manter a senha atual.</strong>
+            </div>
+
+            <div class="form-group-inline">
+                <div class="form-group">
+                    <label for="senha">Senha</label>
+                    <input type="password" name="senha" id="senha" placeholder="Nova senha (opcional)">
+                    <span class="form-help">Mínimo de 6 caracteres</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="senha_confirm">Confirme a senha</label>
+                    <input type="password" name="senha_confirm" id="senha_confirm" placeholder="Confirme a nova senha">
+                </div>
+            </div>
+
+            <div class="btn-group">
+                <button type="submit" class="btn btn-primary btn-large">💾 Salvar Alterações</button>
+                <a href="listar_cliente.php" class="btn btn-secondary btn-large">Cancelar</a>
+            </div>
+        </form>
     </div>
-</form>
+</div>
 
 </body>
 </html>

@@ -1,90 +1,51 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
 <head>
-    <title>Tem Quase Tudo - Produtos</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciar Produtos - Tem Quase Tudo</title>
+    <link rel="stylesheet" href="/tem-quase-tudo/assets/admin.css">
 </head>
 <body>
 
-<h1>Painel de Administração de Produtos</h1>
+<div class="admin-header">
+    <a href="/tem-quase-tudo/" class="admin-header-title">
+        <span>📦</span>
+        <span>Tem Quase Tudo - Admin</span>
+    </a>
+    <div class="admin-header-actions">
+        <a href="/tem-quase-tudo/" class="btn btn-secondary btn-small">← Voltar ao site</a>
+    </div>
+</div>
 
-<ul>
-    <li><a href="cadastrar_produto.php">Adicionar Produto</a></li>
-    <li><a href="listar_produtos.php">Listar Produtos</a></li>
-</ul>
+<div class="admin-container">
+    <div class="admin-main">
+        <h1 class="admin-page-title">Gerenciar Produtos</h1>
+        <p class="admin-page-subtitle">Adicione, edite e visualize os produtos do catálogo</p>
 
-=======
-<?php
-$q = isset($_GET['q']) ? trim(strip_tags($_GET['q'])) : '';
+        <nav class="admin-nav" style="margin-top: 20px;">
+            <li class="admin-nav-item">
+                <a href="cadastrar_produto.php">
+                    <span class="icon">➕</span>
+                    <span>Adicionar Produto</span>
+                </a>
+            </li>
+            <li class="admin-nav-item">
+                <a href="listar_produtos.php">
+                    <span class="icon">📋</span>
+                    <span>Listar Produtos</span>
+                </a>
+            </li>
+            <li class="admin-nav-item">
+                <a href="../index.php">
+                    <span class="icon">⬅️</span>
+                    <span>Voltar ao Painel Principal</span>
+                </a>
+            </li>
+        </nav>
+    </div>
+</div>
 
-$results = [];
-$productsFile = __DIR__ . '/../../includes/products.php';
-if (file_exists($productsFile)) {
-    include $productsFile;
-    if ($q !== '' && !empty($products) && is_array($products)) {
-        foreach ($products as $p) {
-            $hay = ($p['name'] ?? '') . ' ' . ($p['description'] ?? '') . ' ' . ($p['category'] ?? '');
-            if (mb_stripos($hay, $q) !== false) {
-                $results[] = $p;
-            }
-        }
-    }
-}
-
-?>
-<!doctype html>
-<html lang="pt-br">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Admin — Produtos (busca)</title>
-  <style>
-    body{font-family:Segoe UI,Arial,Helvetica,sans-serif;margin:18px;color:#222}
-    .search{margin-bottom:12px}
-    .card{background:#fff;padding:10px;border-radius:6px;margin:8px 0;box-shadow:0 0 0 1px rgba(0,0,0,0.03)}
-    .row{display:flex;gap:12px;align-items:flex-start}
-    .thumb{width:72px;height:72px;background:#f2f2f2;border:1px solid #e1e1e1;object-fit:cover}
-    .meta{font-size:0.9rem;color:#555}
-  </style>
-</head>
-<body>
-  <h2>Admin — Busca de Produtos (mínima)</h2>
-  <p class="meta">Página pequena para facilitar revisão do professor — foco: busca/visualização.</p>
-
-  <form method="get" class="search">
-    <input name="q" value="<?php echo htmlspecialchars($q); ?>" placeholder="Pesquisar (ex: camiseta)" style="padding:8px;width:300px">
-    <button type="submit">Buscar</button>
-    <a href="../../index.php" style="margin-left:10px">Voltar ao site</a>
-  </form>
-
-  <div class="card">
-    <?php if ($q === ''): ?>
-      <p>Digite um termo e pressione Buscar.</p>
-    <?php else: ?>
-      <p class="meta">Foram encontrados <strong><?php echo count($results); ?></strong> produto(s) para "<?php echo htmlspecialchars($q); ?>".</p>
-
-      <?php if (count($results) === 0): ?>
-        <p>Nenhum produto encontrado.</p>
-      <?php else: ?>
-        <?php foreach ($results as $r): ?>
-          <div class="card">
-            <div class="row">
-              <?php if (!empty($r['image']) && file_exists(__DIR__ . '/../../' . ltrim($r['image'], '/'))): ?>
-                <img src="<?php echo htmlspecialchars('../../' . ltrim($r['image'], '/')); ?>" alt="<?php echo htmlspecialchars($r['name']); ?>" class="thumb">
-              <?php else: ?>
-                <div class="thumb" style="display:flex;align-items:center;justify-content:center;color:#888;font-size:0.85rem">sem foto</div>
-              <?php endif; ?>
-
-              <div>
-                <strong><?php echo htmlspecialchars($r['name'] ?? ''); ?></strong><br>
-                <div class="meta">Preço: R$ <?php echo number_format($r['price'] ?? 0, 2, ',', '.'); ?> — Categoria: <?php echo htmlspecialchars($r['category'] ?? '-'); ?></div>
-                <div style="margin-top:6px"><?php echo htmlspecialchars($r['description'] ?? ''); ?></div>
-              </div>
-            </div>
-          </div>
-        <?php endforeach; ?>
-      <?php endif; ?>
-    <?php endif; ?>
-  </div>
-  <footer style="margin-top:14px;color:#666;font-size:0.9rem">Atualizado em: <?php echo date('d/m/Y'); ?></footer>
 </body>
 </html>
+

@@ -67,50 +67,90 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html lang="pt-BR">
 <head>
 	<meta charset="utf-8">
-	<title>Criar Conta</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Criar Conta - Tem Quase Tudo</title>
+	<link rel="stylesheet" href="/tem-quase-tudo/assets/admin.css">
 </head>
 <body>
 
-<h1>Criar Conta</h1>
-
-<?php if (!empty($errors)): ?>
-	<div>
-		<strong>Erros:</strong>
-		<ul>
-			<?php foreach ($errors as $e): ?>
-				<li><?= htmlspecialchars($e) ?></li>
-			<?php endforeach; ?>
-		</ul>
+<div class="admin-header">
+	<a href="/tem-quase-tudo/" class="admin-header-title">
+		<span>📦</span>
+		<span>Tem Quase Tudo - Admin</span>
+	</a>
+	<div class="admin-header-actions">
+		<a href="/tem-quase-tudo/" class="btn btn-secondary btn-small">← Voltar ao site</a>
 	</div>
-<?php endif; ?>
+</div>
 
-<form method="post" action="">
-	<label for="nome">Nome *</label>
-	<input type="text" name="nome" id="nome" value="<?= htmlspecialchars($nome) ?>" required>
+<div class="admin-container">
+	<div class="admin-main" style="max-width: 600px;">
+		<h1 class="admin-page-title">Criar Conta</h1>
+		<p class="admin-page-subtitle">Preencha os dados para se cadastrar</p>
 
-	<label for="email">E-mail *</label>
-	<input type="email" name="email" id="email" value="<?= htmlspecialchars($email) ?>" required>
+		<?php if (!empty($errors)): ?>
+			<div class="alert alert-error">
+				<span class="alert-icon">⚠️</span>
+				<div class="alert-content">
+					<strong>Erros no formulário:</strong>
+					<ul>
+						<?php foreach ($errors as $e): ?>
+							<li><?= htmlspecialchars($e) ?></li>
+						<?php endforeach; ?>
+					</ul>
+				</div>
+			</div>
+		<?php endif; ?>
 
-	<label for="telefone">Telefone</label>
-	<input type="text" name="telefone" id="telefone" value="<?= htmlspecialchars($telefone) ?>">
+		<form method="post" action="" class="admin-form">
+			<div class="form-group">
+				<label for="nome">Nome <span>*</span></label>
+				<input type="text" name="nome" id="nome" value="<?= htmlspecialchars($nome) ?>" required placeholder="Seu nome completo">
+			</div>
 
-	<label for="endereco">Endereço</label>
-	<input type="text" name="endereco" id="endereco" value="<?= htmlspecialchars($endereco) ?>">
+			<div class="form-group">
+				<label for="email">E-mail <span>*</span></label>
+				<input type="email" name="email" id="email" value="<?= htmlspecialchars($email) ?>" required placeholder="seu.email@exemplo.com">
+			</div>
 
-	<label for="cidade">Cidade</label>
-	<input type="text" name="cidade" id="cidade" value="<?= htmlspecialchars($cidade) ?>">
+			<div class="form-group-inline">
+				<div class="form-group">
+					<label for="telefone">Telefone</label>
+					<input type="tel" name="telefone" id="telefone" value="<?= htmlspecialchars($telefone) ?>" placeholder="(11) 98765-4321">
+				</div>
 
-	<label for="senha">Senha *</label>
-	<input type="password" name="senha" id="senha" value="">
+				<div class="form-group">
+					<label for="cidade">Cidade</label>
+					<input type="text" name="cidade" id="cidade" value="<?= htmlspecialchars($cidade) ?>" placeholder="São Paulo">
+				</div>
+			</div>
 
-	<label for="senha_confirm">Confirme a senha *</label>
-	<input type="password" name="senha_confirm" id="senha_confirm" value="">
+			<div class="form-group">
+				<label for="endereco">Endereço</label>
+				<input type="text" name="endereco" id="endereco" value="<?= htmlspecialchars($endereco) ?>" placeholder="Rua, número, complemento">
+			</div>
 
-	<div style="margin-top:12px">
-		<button type="submit">Cadastrar</button>
-		<a href="index.php" style="margin-left:10px">Voltar</a>
+			<div class="form-group-inline">
+				<div class="form-group">
+					<label for="senha">Senha <span>*</span></label>
+					<input type="password" name="senha" id="senha" required placeholder="Mínimo 6 caracteres">
+					<span class="form-help">Mínimo de 6 caracteres</span>
+				</div>
+
+				<div class="form-group">
+					<label for="senha_confirm">Confirme a senha <span>*</span></label>
+					<input type="password" name="senha_confirm" id="senha_confirm" required placeholder="Confirme sua senha">
+				</div>
+			</div>
+
+			<div class="btn-group">
+				<button type="submit" class="btn btn-primary btn-large">Cadastrar</button>
+				<a href="index.php" class="btn btn-secondary btn-large">Cancelar</a>
+			</div>
+		</form>
 	</div>
-</form>
+</div>
+
 </body>
 </html>
 

@@ -15,54 +15,88 @@ if ($resultado) {
 <html lang="pt-BR">
 <head>
     <meta charset="utf-8">
-    <title>Lista de Clientes</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Clientes - Tem Quase Tudo</title>
+    <link rel="stylesheet" href="/tem-quase-tudo/assets/admin.css">
 </head>
 <body>
 
-<h1>Clientes</h1>
+<div class="admin-header">
+    <a href="/tem-quase-tudo/" class="admin-header-title">
+        <span>📦</span>
+        <span>Tem Quase Tudo - Admin</span>
+    </a>
+    <div class="admin-header-actions">
+        <a href="/tem-quase-tudo/" class="btn btn-secondary btn-small">← Voltar ao site</a>
+    </div>
+</div>
 
-<a href="cadastrar_cliente.php">Adicionar Cliente</a>
-<br><br>
+<div class="admin-container">
+    <div class="admin-main">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <div>
+                <h1 class="admin-page-title">Clientes</h1>
+                <p class="admin-page-subtitle">Gerencie todos os clientes cadastrados no sistema</p>
+            </div>
+            <a href="cadastrar_cliente.php" class="btn btn-primary">➕ Adicionar Cliente</a>
+        </div>
 
-<?php if (!empty($error_msg)): ?>
-    <div style="color:red"><strong><?= htmlspecialchars($error_msg) ?></strong></div>
-<?php endif; ?>
+        <?php if (!empty($error_msg)): ?>
+            <div class="alert alert-error">
+                <span class="alert-icon">⚠️</span>
+                <div class="alert-content">
+                    <strong>Erro!</strong>
+                    <p><?= htmlspecialchars($error_msg) ?></p>
+                </div>
+            </div>
+        <?php endif; ?>
 
-<table border="1" cellpadding="8">
-    <tr>
-        <th>ID</th>
-        <th>Nome</th>
-        <th>E-mail</th>
-        <th>Telefone</th>
-        <th>Endereço</th>
-        <th>Cidade</th>
-        <th>Ações</th>
-    </tr>
+        <?php if (empty($clientes)): ?>
+            <div class="empty-state">
+                <div class="empty-state-icon">👥</div>
+                <h3>Nenhum cliente cadastrado</h3>
+                <p>Comece adicionando um novo cliente ao sistema</p>
+                <a href="cadastrar_cliente.php" class="btn btn-primary">➕ Adicionar Primeiro Cliente</a>
+            </div>
+        <?php else: ?>
+            <div style="overflow-x: auto;">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 60px;">ID</th>
+                            <th>Nome</th>
+                            <th>E-mail</th>
+                            <th>Telefone</th>
+                            <th>Cidade</th>
+                            <th style="width: 180px;">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($clientes as $c): ?>
+                            <tr>
+                                <td><strong><?= htmlspecialchars($c['id']) ?></strong></td>
+                                <td><?= htmlspecialchars($c['nome']) ?></td>
+                                <td><?= htmlspecialchars($c['email']) ?></td>
+                                <td><?= htmlspecialchars($c['telefone'] ?: '-') ?></td>
+                                <td><?= htmlspecialchars($c['cidade'] ?: '-') ?></td>
+                                <td>
+                                    <div class="table-actions">
+                                        <a href="editar_cliente.php?id=<?= urlencode($c['id']) ?>" class="btn btn-info btn-small">✏️ Editar</a>
+                                        <a href="deletar_cliente.php?id=<?= urlencode($c['id']) ?>" class="btn btn-danger btn-small" onclick="return confirm('Tem certeza que deseja excluir este cliente?')">🗑️ Excluir</a>
+                                    </div>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+        <?php endif; ?>
 
-    <?php if (empty($clientes)): ?>
-        <tr>
-            <td colspan="7">Nenhum cliente cadastrado.</td>
-        </tr>
-    <?php else: ?>
-        <?php foreach ($clientes as $c): ?>
-            <tr>
-                <td><?= htmlspecialchars($c['id']) ?></td>
-                <td><?= htmlspecialchars($c['nome']) ?></td>
-                <td><?= htmlspecialchars($c['email']) ?></td>
-                <td><?= htmlspecialchars($c['telefone']) ?></td>
-                <td><?= htmlspecialchars($c['endereco']) ?></td>
-                <td><?= htmlspecialchars($c['cidade']) ?></td>
-                <td>
-                    <a href="atualizar_cliente.php?id=<?= urlencode($c['id']) ?>">Editar</a> |
-                    <a href="deletar_cliente.php?id=<?= urlencode($c['id']) ?>" onclick="return confirm('Confirma exclusão deste cliente?')">Excluir</a>
-                </td>
-            </tr>
-        <?php endforeach; ?>
-    <?php endif; ?>
-</table>
-
-<br>
-<a href="index.php">Voltar</a>
+        <div style="margin-top: 30px;">
+            <a href="index.php" class="btn btn-secondary">← Voltar</a>
+        </div>
+    </div>
+</div>
 
 </body>
 </html>

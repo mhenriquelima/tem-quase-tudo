@@ -55,229 +55,77 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Setup do Banco de Dados - Tem Quase Tudo Admin</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-        
-        .container {
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-            padding: 40px;
-            max-width: 600px;
-            width: 100%;
-        }
-        
-        h1 {
-            color: #333;
-            margin-bottom: 10px;
-            font-size: 28px;
-        }
-        
-        .subtitle {
-            color: #666;
-            margin-bottom: 30px;
-            font-size: 14px;
-        }
-        
-        .info-box {
-            background: #f0f4ff;
-            border-left: 4px solid #667eea;
-            padding: 15px;
-            margin-bottom: 30px;
-            border-radius: 5px;
-            font-size: 14px;
-            color: #333;
-            line-height: 1.6;
-        }
-        
-        .info-box strong {
-            color: #667eea;
-        }
-        
-        .message {
-            padding: 15px;
-            margin-bottom: 20px;
-            border-radius: 5px;
-            font-size: 14px;
-            line-height: 1.5;
-            word-wrap: break-word;
-            white-space: pre-wrap;
-        }
-        
-        .message.success {
-            background: #d4edda;
-            border: 1px solid #c3e6cb;
-            color: #155724;
-        }
-        
-        .message.error {
-            background: #f8d7da;
-            border: 1px solid #f5c6cb;
-            color: #721c24;
-        }
-        
-        .button-group {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-        
-        .btn {
-            flex: 1;
-            padding: 12px 20px;
-            border: none;
-            border-radius: 5px;
-            font-weight: 600;
-            cursor: pointer;
-            font-size: 14px;
-            transition: all 0.3s ease;
-        }
-        
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-        
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
-        }
-        
-        .btn-primary:active {
-            transform: translateY(0);
-        }
-        
-        .btn-secondary {
-            background: #e9ecef;
-            color: #333;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .btn-secondary:hover {
-            background: #dee2e6;
-        }
-        
-        .warning {
-            background: #fff3cd;
-            border: 1px solid #ffeaa7;
-            color: #856404;
-            padding: 15px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            font-size: 14px;
-            line-height: 1.6;
-        }
-        
-        .warning strong {
-            color: #856404;
-        }
-        
-        .steps {
-            background: #f8f9fa;
-            border: 1px solid #dee2e6;
-            border-radius: 5px;
-            padding: 20px;
-            margin-bottom: 20px;
-            font-size: 14px;
-        }
-        
-        .steps h3 {
-            color: #333;
-            margin-bottom: 12px;
-            font-size: 16px;
-        }
-        
-        .steps ol {
-            margin-left: 20px;
-            color: #666;
-            line-height: 1.8;
-        }
-        
-        .steps li {
-            margin-bottom: 8px;
-        }
-        
-        .footer {
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid #dee2e6;
-            text-align: center;
-            font-size: 12px;
-            color: #999;
-        }
-        
-        a {
-            color: #667eea;
-            text-decoration: none;
-        }
-        
-        a:hover {
-            text-decoration: underline;
-        }
-    </style>
+    <link rel="stylesheet" href="/tem-quase-tudo/assets/admin.css">
 </head>
 <body>
-    <div class="container">
-        <h1>⚙️ Setup do Banco de Dados</h1>
-        <p class="subtitle">Tem Quase Tudo - Administração</p>
+
+<div class="admin-header">
+    <a href="/tem-quase-tudo/" class="admin-header-title">
+        <span>📦</span>
+        <span>Tem Quase Tudo - Admin</span>
+    </a>
+    <div class="admin-header-actions">
+        <a href="/tem-quase-tudo/" class="btn btn-secondary btn-small">← Voltar ao site</a>
+    </div>
+</div>
+
+<div class="admin-container">
+    <div class="admin-main" style="max-width: 700px;">
+        <h1 class="admin-page-title">⚙️ Setup do Banco de Dados</h1>
+        <p class="admin-page-subtitle">Configure e popule o banco de dados do sistema</p>
         
         <?php if (!empty($message)): ?>
-            <div class="message <?php echo $type; ?>">
-                <?php echo htmlspecialchars($message); ?>
+            <div class="alert alert-<?php echo $type === 'success' ? 'success' : 'error'; ?>" style="margin-top: 20px;">
+                <span class="alert-icon"><?php echo $type === 'success' ? '✓' : '⚠️'; ?></span>
+                <div class="alert-content">
+                    <strong><?php echo $type === 'success' ? 'Sucesso!' : 'Erro!'; ?></strong>
+                    <p><?php echo htmlspecialchars($message); ?></p>
+                </div>
             </div>
         <?php endif; ?>
         
         <?php if (empty($_POST)): ?>
-            <div class="info-box">
-                <strong>O que será feito:</strong><br>
-                ✓ Criar banco de dados (se não existir)<br>
-                ✓ Criar tabelas (clientes, produtos, carrinho)<br>
-                ✓ Inserir produtos de exemplo (15 itens)<br>
-                ✓ Inserir clientes de exemplo (5 registros)
+            <div style="background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3); padding: 16px; border-radius: 6px; margin-top: 20px; margin-bottom: 20px;">
+                <p style="margin-bottom: 12px; font-weight: 600; color: var(--dark-gray);">O que será feito:</p>
+                <ul style="margin-left: 20px; color: var(--text-gray); line-height: 1.8;">
+                    <li>✓ Criar banco de dados (se não existir)</li>
+                    <li>✓ Criar tabelas (clientes, produtos, carrinho)</li>
+                    <li>✓ Inserir produtos de exemplo</li>
+                    <li>✓ Inserir clientes de exemplo</li>
+                </ul>
             </div>
             
-            <div class="warning">
-                <strong>⚠️ Atenção:</strong> Esta ação irá <strong>sobrescrever</strong> todos os dados existentes no banco de dados. Certifique-se de ter um backup antes de continuar!
+            <div style="background: #FEF3C7; border: 1px solid #FCD34D; border-left: 4px solid var(--warning-yellow); padding: 16px; border-radius: 6px; margin-bottom: 20px;">
+                <p style="margin: 0; color: #78350F;"><strong>⚠️ Atenção:</strong> Esta ação irá <strong>sobrescrever</strong> todos os dados existentes no banco de dados. Certifique-se de ter um backup antes de continuar!</p>
             </div>
             
-            <form method="POST">
+            <form method="POST" class="admin-form">
                 <input type="hidden" name="action" value="setup_database">
-                <button type="submit" class="btn btn-primary" onclick="return confirm('Tem certeza que deseja popular o banco de dados? Todos os dados existentes serão perdidos.');">
+                <button type="submit" class="btn btn-primary btn-large" onclick="return confirm('Tem certeza que deseja popular o banco de dados? Todos os dados existentes serão perdidos.');">
                     🚀 Popular Banco de Dados
                 </button>
             </form>
             
-            <div class="steps">
-                <h3>📋 Alternativas:</h3>
-                <ol>
-                    <li><strong>Usar phpMyAdmin:</strong> Acesse <a href="http://localhost/phpmyadmin" target="_blank">http://localhost/phpmyadmin</a>, vá para a aba SQL e importe o arquivo <code>scripts/init_db.sql</code></li>
-                    <li><strong>Usar MySQL CLI (PowerShell):</strong><br>
-                        <code>mysql -u root < .\scripts\init_db.sql</code>
+            <div style="background: var(--light-gray); border: 1px solid var(--border-gray); border-radius: 6px; padding: 20px; margin-top: 30px;">
+                <h3 style="color: var(--dark-gray); margin-bottom: 12px; font-size: 16px;">📋 Alternativas:</h3>
+                <ol style="margin-left: 20px; color: var(--text-gray); line-height: 1.8;">
+                    <li style="margin-bottom: 10px;">
+                        <strong>Usar phpMyAdmin:</strong><br>
+                        Acesse <a href="http://localhost/phpmyadmin" target="_blank" style="color: var(--primary-orange); text-decoration: underline;">http://localhost/phpmyadmin</a>, vá para a aba SQL e importe o arquivo <code style="background: var(--white); padding: 2px 6px; border-radius: 3px; font-family: monospace;">scripts/init_db.sql</code>
+                    </li>
+                    <li>
+                        <strong>Usar MySQL CLI (PowerShell):</strong><br>
+                        <code style="background: var(--white); padding: 2px 6px; border-radius: 3px; font-family: monospace; display: block; margin-top: 8px;">mysql -u root &lt; .\scripts\init_db.sql</code>
                     </li>
                 </ol>
             </div>
         <?php endif; ?>
         
-        <div class="footer">
-            <a href="index.php">← Voltar ao Admin</a>
+        <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--border-gray); text-align: center;">
+            <a href="index.php" class="btn btn-secondary">← Voltar ao Painel Admin</a>
         </div>
     </div>
+</div>
+
 </body>
 </html>
