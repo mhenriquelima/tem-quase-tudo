@@ -23,6 +23,25 @@ CREATE TABLE IF NOT EXISTS `clientes` (
   `cidade` VARCHAR(100)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+-- TABELA DE CONTATOS
+CREATE TABLE IF NOT EXISTS `contatos` (
+  `id` INT AUTO_INCREMENT PRIMARY KEY,
+  `nome` VARCHAR(255) NOT NULL,
+  `email` VARCHAR(255) NOT NULL,
+  `telefone` VARCHAR(50),
+  `assunto` VARCHAR(255) NOT NULL,
+  `mensagem` LONGTEXT NOT NULL,
+  `ip_cliente` VARCHAR(45),
+  `user_agent` VARCHAR(255),
+  `status` ENUM('novo', 'respondido', 'arquivado') DEFAULT 'novo',
+  `lido` BOOLEAN DEFAULT FALSE,
+  `criado_em` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `atualizado_em` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  INDEX idx_email (email),
+  INDEX idx_status (status),
+  INDEX idx_criado_em (criado_em)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 -- INSERIR PRODUTOS (NÃO DUPLICA)
 INSERT INTO produtos (produto, descricao, preco, estoque, desconto)
 VALUES
@@ -62,3 +81,29 @@ VALUES
 ('Lápis que Apaga Só o que Você Não Quer', 'Perfeito para confusões criativas.', 3.33, 88, 0),
 ('Relógio de Sol Portátil', 'Funciona melhor em dias nublados.', 22.45, 18, 0),
 ('Bola de Cristal Quebrada', 'Ainda dá para ver o futuro… com algumas distorções.', 45.00, 11, 0);
+
+-- TABELA DE PEDIDOS
+CREATE TABLE IF NOT EXISTS `pedidos` (
+  `id` INT AUTO_INCREMENT PRIMARY KEY,
+  `cliente_id` INT NOT NULL,
+  `data_pedido` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `status` VARCHAR(50) DEFAULT 'Pendente',
+  `total` DECIMAL(10,2) DEFAULT 0,
+  `atualizado_em` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (cliente_id) REFERENCES clientes(id) ON DELETE CASCADE,
+  INDEX idx_cliente_id (cliente_id),
+  INDEX idx_data_pedido (data_pedido)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- TABELA DE ITENS DO PEDIDO
+CREATE TABLE IF NOT EXISTS `pedidos_item` (
+  `id` INT AUTO_INCREMENT PRIMARY KEY,
+  `pedido_id` INT NOT NULL,
+  `produto_id` INT NOT NULL,
+  `quantidade` INT NOT NULL,
+  `preco_unitario` DECIMAL(10,2) NOT NULL,
+  FOREIGN KEY (pedido_id) REFERENCES pedidos(id) ON DELETE CASCADE,
+  FOREIGN KEY (produto_id) REFERENCES produtos(id) ON DELETE CASCADE,
+  INDEX idx_pedido_id (pedido_id),
+  INDEX idx_produto_id (produto_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

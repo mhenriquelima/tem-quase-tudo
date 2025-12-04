@@ -23,7 +23,7 @@ include 'includes/contact_handler.php';
                     <div class="info-card">
                         <div class="info-icon">📧</div>
                         <h3>Email</h3>
-                        <p><a href="mailto:suporte@temquasetudo.com">suporte@temquasetudo.com</a></p>
+                        <p><a href="mailto:suportetemquasetudo@gmail.com">suportetemquasetudo@gmail.com</a></p>
                     </div>
 
                     <div class="info-card">
@@ -49,14 +49,60 @@ include 'includes/contact_handler.php';
                 <div class="contact-form-wrapper">
                     <!-- Mensagens de sucesso/erro -->
                     <?php if (isset($_SESSION['mensagem_sucesso'])): ?>
-                        <div class="alert alert-success">
-                            <span class="alert-icon">✓</span>
-                            <div>
-                                <strong>Sucesso!</strong>
-                                <p><?php echo $_SESSION['mensagem_sucesso']; ?></p>
+                        <!-- Modal de agradecimento -->
+                        <div id="thankyou-modal" class="modal" aria-hidden="false" style="display:block;">
+                            <div class="modal-overlay" id="modal-overlay"></div>
+                            <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+                                <button id="modal-close" class="modal-close" aria-label="Fechar">×</button>
+                                <h2 id="modal-title">Obrigado!</h2>
+                                <p class="modal-message"><?php echo $_SESSION['mensagem_sucesso']; ?></p>
+                                <p class="modal-note">Você será redirecionado para a página inicial em <strong><span id="modal-countdown">5</span></strong> segundos.</p>
+                                <div class="modal-actions">
+                                    <button id="go-home" class="btn-submit">Ir para Início Agora</button>
+                                </div>
                             </div>
                         </div>
                         <?php unset($_SESSION['mensagem_sucesso']); ?>
+
+                        <style>
+                            .modal { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; z-index: 9999; }
+                            .modal-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.5); }
+                            .modal-content { position: relative; background: #fff; padding: 24px; max-width: 480px; width: 90%; border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,0.2); z-index: 10000; }
+                            .modal-close { position: absolute; right: 10px; top: 10px; background: transparent; border: none; font-size: 22px; cursor: pointer; }
+                            .modal-message { margin: 12px 0; color: #333; }
+                            .modal-note { margin: 8px 0 16px; color: #555; }
+                            .modal-actions { text-align: right; }
+                            .btn-submit { background:#FF9900; color:#fff; border:none; padding:8px 14px; border-radius:4px; cursor:pointer; }
+                        </style>
+
+                        <script>
+                            (function() {
+                                var seconds = 5;
+                                var countdownEl = document.getElementById('modal-countdown');
+                                var interval = setInterval(function() {
+                                    seconds--;
+                                    if (countdownEl) countdownEl.textContent = seconds;
+                                    if (seconds <= 0) {
+                                        clearInterval(interval);
+                                        window.location.href = '/tem-quase-tudo/index.php';
+                                    }
+                                }, 1000);
+
+                                var modal = document.getElementById('thankyou-modal');
+                                var overlay = document.getElementById('modal-overlay');
+                                var closeBtn = document.getElementById('modal-close');
+                                var goHome = document.getElementById('go-home');
+
+                                function closeModal(redirect) {
+                                    if (modal) modal.style.display = 'none';
+                                    if (redirect) window.location.href = '/tem-quase-tudo/index.php';
+                                }
+
+                                if (overlay) overlay.addEventListener('click', function() { closeModal(true); });
+                                if (closeBtn) closeBtn.addEventListener('click', function() { closeModal(false); });
+                                if (goHome) goHome.addEventListener('click', function() { closeModal(true); });
+                            })();
+                        </script>
                     <?php endif; ?>
 
                     <?php if (isset($_SESSION['erros_contato'])): ?>

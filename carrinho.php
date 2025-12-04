@@ -74,7 +74,7 @@ $total = array_sum(array_map(fn($p) => $p['preco'] * $p['quantidade'], $selected
                 </div>
 
                 <div style="margin-top: 12px;">
-                    <button class="checkout-btn" type="button" onclick="alert('Implementar checkout');" style="margin-top:10px;">✓ Finalizar Compra</button>
+                    <a href="/tem-quase-tudo/pagamento.php" class="checkout-btn" style="margin-top:10px; display:inline-block; background-color:#27ae60; color:white; border:none; padding:12px 30px; border-radius:4px; font-weight:600; text-align:center; text-decoration:none;">✓ Finalizar Compra</a>
                 </div>
             </div>
         </form>

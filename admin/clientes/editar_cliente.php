@@ -1,6 +1,10 @@
 <?php
 require_once __DIR__ . '/../config.inc.php';
 
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 $errors = [];
 $id = $_GET['id'] ?? null;
 
@@ -9,7 +13,22 @@ if (empty($id) || !ctype_digit((string)$id)) {
     exit;
 }
 
+// garantir que o id seja inteiro
 $id = (int) $id;
+
+// Se o usuário não for admin, permita apenas editar o próprio cadastro
+if (empty($_SESSION['is_admin']) || $_SESSION['is_admin'] !== true) {
+    // Se não estiver logado como cliente, redireciona para conta/login
+    if (empty($_SESSION['cliente_id'])) {
+        header('Location: /tem-quase-tudo/conta.php');
+        exit;
+    }
+    // Só permite editar se for o próprio cliente
+    if ($_SESSION['cliente_id'] !== $id) {
+        header('Location: /tem-quase-tudo/conta.php');
+        exit;
+    }
+}
 
 $nome = '';
 $email = '';
@@ -64,7 +83,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $exec = mysqli_stmt_execute($stmt);
             if ($exec) {
                 mysqli_stmt_close($stmt);
-                header('Location: listar_cliente.php?msg=updated');
+                if (isset($_SESSION['is_admin']) && $_SESSION['is_admin'] === true) {
+                    header('Location: listar_cliente.php?msg=updated');
+                } else {
+                    header('Location: /tem-quase-tudo/conta.php?msg=updated');
+                }
                 exit;
             } else {
                 $errors[] = 'Falha ao atualizar: ' . mysqli_stmt_error($stmt);

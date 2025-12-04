@@ -43,14 +43,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 		} else {
 			$senha_hash = password_hash($senha, PASSWORD_DEFAULT);
 
-			$sql = "INSERT INTO clientes (nome, email, senha, telefone, endereco, cidade) VALUES (?, ?, ?, ?, ?, ?)";
-			$stmt = mysqli_prepare($conexao, $sql);
+			// Verifica se já existe um cliente com o mesmo email
+			$check_sql = "SELECT id FROM clientes WHERE email = ? LIMIT 1";
+			$check_stmt = mysqli_prepare($conexao, $check_sql);
+			if ($check_stmt) {
+				mysqli_stmt_bind_param($check_stmt, 's', $email);
+				if (mysqli_stmt_execute($check_stmt)) {
+					mysqli_stmt_store_result($check_stmt);
+					if (mysqli_stmt_num_rows($check_stmt) > 0) {
+						$errors[] = 'Já existe um cadastro com este e-mail.';
+					}
+				} else {
+					$errors[] = 'Erro ao verificar e-mail existente: ' . mysqli_stmt_error($check_stmt);
+				}
+				mysqli_stmt_close($check_stmt);
+			} else {
+				$errors[] = 'Erro ao preparar verificação de e-mail: ' . mysqli_error($conexao);
+			}
+
+			if (empty($errors)) {
+				$sql = "INSERT INTO clientes (nome, email, senha, telefone, endereco, cidade) VALUES (?, ?, ?, ?, ?, ?)";
+				$stmt = mysqli_prepare($conexao, $sql);
 			if ($stmt) {
 				mysqli_stmt_bind_param($stmt, 'ssssss', $nome, $email, $senha_hash, $telefone, $endereco, $cidade);
 				$exec = mysqli_stmt_execute($stmt);
 				if ($exec) {
+					$cliente_id = mysqli_insert_id($conexao);
 					mysqli_stmt_close($stmt);
-					header('Location: index.php?msg=sucesso');
+					
+					// Login automático do cliente
+					if (!isset($_SESSION)) {
+						session_start();
+					}
+					$_SESSION['cliente_id'] = $cliente_id;
+					$_SESSION['usuario_id'] = $cliente_id;
+					$_SESSION['cliente_nome'] = $nome;
+					
+					// Redireciona para a home com mensagem de sucesso
+					header('Location: /tem-quase-tudo/index.php?cadastro=ok');
 					exit;
 				} else {
 					$errors[] = 'Falha ao inserir no banco: ' . mysqli_stmt_error($stmt);
@@ -59,6 +89,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 			} else {
 				$errors[] = 'Erro ao preparar a query: ' . mysqli_error($conexao);
 			}
+		}
 		}
 	}
 }

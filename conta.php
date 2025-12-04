@@ -87,19 +87,15 @@ if (!isset($conexao) || !$conexao) {
             <table border="0" cellpadding="8" style="width:100%;border-collapse:collapse">
                 <thead>
                     <tr style="background:#f7f7f7">
-                        <th>ID</th>
                         <th>Data</th>
                         <th>Total</th>
-                        <th>Ações</th>
                     </tr>
                 </thead>
                 <tbody>
                 <?php foreach ($pedidos as $p): ?>
                     <tr>
-                        <td><?php echo htmlspecialchars($p['id']); ?></td>
                         <td><?php echo htmlspecialchars($p['data']); ?></td>
                         <td>R$ <?php echo number_format($p['total'],2,',','.'); ?></td>
-                        <td><a href="/tem-quase-tudo/admin/pedidos/ver_pedido.php?id=<?php echo $p['id']; ?>">Ver</a></td>
                     </tr>
                 <?php endforeach; ?>
                 </tbody>
